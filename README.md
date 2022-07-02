@@ -10,13 +10,13 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 @TODO: Summarize the paper, the method & its contributions in relation with the existing literature.
 
-# 2. The method and my interpretation
+# 2. The method and our interpretation
 
 ## 2.1. The original method
 
 @TODO: Explain the original method.
 
-## 2.2. My interpretation 
+## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
 
