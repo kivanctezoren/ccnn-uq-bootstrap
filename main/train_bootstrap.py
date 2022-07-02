@@ -41,7 +41,7 @@ if __name__ == "__main__":
     train_dl = torch.utils.data.DataLoader(...)
     test_dl = torch.utils.data.DataLoader(...)
     
-    ccnn = CCNN(...)
+    #ccnn = CCNN(...)
     
     # TODO: Train CCNN
     ...
