@@ -30,6 +30,21 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 @TODO: Explain your code & directory structure and how other people can run it.
 
+We have used Python 3.9 with the following packages to run the code:
+
+* ...
+* ...
+
+Our environment can be cloned using Conda and the `environment.yaml` file using the following command:
+
+```conda env create -f environment.yaml```
+
+To activate:
+
+```conda activate ccnn-bstrap-uq```
+
+<Run `<...>` to replicate <...> experiment...>
+
 ## 3.3. Results
 
 @TODO: Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
@@ -44,7 +59,7 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 `main/_init_paths` adapted from bag of tricks...
 
-CCNN adapted from [zhang](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py) ...
+CCNN and related math func.s adapted from [zhang](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py) ...
 
 
 # Contact
