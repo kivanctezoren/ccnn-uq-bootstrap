@@ -1,7 +1,10 @@
-#from math_utils import ...
-
+import logging
 import logging as lg
+import math
+import numpy as np
 import torch.utils.data
+
+from .math_utils import get_pixel_vector
 
 # CCNN is defined for two layers, additional methods are required for adding more.
 # Strings indicating the methods:
@@ -11,16 +14,17 @@ MULTILAYER_METHODS = ["ZHANG", "TRANSFER_LRN"]
 
 lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
-               level=lg.INFO)
+               level=lg.DEBUG)
 
 
 class CCNN:
     def __init__(self,
                  train_dl: torch.utils.data.DataLoader,
                  test_dl: torch.utils.data.DataLoader,
-                 num_train: int,
-                 num_test: int,
-                 multilayer_method: str = "ZHANG"
+                 train_img_cnt: int,
+                 test_img_cnt: int,
+                 multilayer_method: str = "ZHANG",
+                 device: torch.device = torch.device("cpu")
                  ):
         if multilayer_method not in MULTILAYER_METHODS:
             raise ValueError("Unrecognized CCNN layer addition method: " + multilayer_method)
@@ -28,11 +32,13 @@ class CCNN:
         self.train_dl = train_dl
         self.test_dl = test_dl
         
-        self.num_train = num_train
-        self.num_test = num_test
-
+        self.train_img_cnt = train_img_cnt
+        self.test_img_cnt = test_img_cnt
+        
+        self.device = device
+        
         self.layer_count = 0
-        self.n = self.num_train + self.num_test
+        self.img_cnt = self.train_img_cnt + self.test_img_cnt
         
         if multilayer_method == "ZHANG":
             # Generate first layer
@@ -88,17 +94,53 @@ class CCNN:
             x_test.append(inp)
             labels.append(lbl)
         
-        x_train = torch.vstack(x_train)
-        x_test = torch.vstack(x_test)
+        # Process train & test toghether
+        x_train = torch.vstack(x_train).to(self.device)
+        x_test = torch.vstack(x_test).to(self.device)
         
-        x_raw = torch.cat((x_train, x_test))
-        labels = torch.Tensor(labels)
+        x_raw = torch.cat((x_train, x_test)).to(self.device)
+        labels = torch.hstack(labels).to(self.device)
+
+        lg.debug("x_train shape: " + str(x_train.shape))
+        lg.debug("x_test shape: " + str(x_test.shape))
+        lg.debug("x_raw shape (2D): " + str(x_raw.shape))
+        lg.debug("labels shape: " + str(labels.shape))
         
         lg.info("Detecting image parameters...")
-        ...
+        if x_raw.shape[2] != x_raw.shape[3]:
+            raise ValueError(f"Expected square images, instead got width {x_raw.shape[2]}, height {x_raw.shape[3]}.")
         
+        img_size = x_raw.shape[2]  # == x_raw.shape[3] == L (one side of img.)
+        patch_size = 1 + (patch_radius * 2)  # F = 2*radius + 1
+        patch_pixel_cnt = patch_size ** 2
+        
+        patch_cnt_one_side = img_size - (patch_radius * 2)  # == (L - F + 1)
+        patch_cnt = patch_cnt_one_side ** 2
+        
+        pool_cnt = (patch_cnt_one_side // pooling_stride) ** 2
+        
+        channel_cnt = x_raw.shape[1]
+        feature_dim = nystrom_dim  # Since there is a single channel ...?
+
+        # Vectorize the inputs
+        # TODO: Check whether this should be done
+        x_raw = x_raw.reshape((x_raw.shape[0], x_raw.shape[1], 1, -1)).squeeze(2)
+
+        lg.debug("x_raw shape (vectorized 1D): " + str(x_raw.shape))
+
         lg.info("Constructing the patches...")
-        ...
+        
+        patch = torch.zeros((self.img_cnt, patch_cnt, channel_cnt, patch_pixel_cnt),
+                            dtype=torch.float32,
+                            device=self.device)
+        
+        for y in range(0, patch_cnt_one_side):
+            for x in range(0, patch_cnt_one_side):
+                for i in range(0, channel_cnt):
+                    indices = get_pixel_vector(x + patch_radius, y + patch_radius, patch_radius, img_size)
+                    patch[:, x + y * patch_cnt_one_side, i] = x_raw[:, i, indices]
+        
+        lg.debug("patch shape: " + str(patch.shape))
         
         lg.info("Applying local contrast normalization and ZCA whitening...")
         ...
@@ -117,4 +159,4 @@ class CCNN:
         
         self.layer_count += 1
         
-        lg.info("Done layer generation #" + str(self.layer_count + 1) + ".")
+        lg.info("Done layer generation #" + str(self.layer_count) + ".")

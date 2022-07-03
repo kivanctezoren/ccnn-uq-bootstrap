@@ -1,9 +1,11 @@
 import _init_paths
-from bootstrap import bootstrap
-from ccnn import ccnn
 
+import logging as lg
 import torch
 from torchvision import datasets, transforms
+
+from bootstrap import bootstrap
+from ccnn import ccnn
 
 # Globals for configuration:
 BATCH_SIZE = 256
@@ -15,9 +17,20 @@ DATASET = "MNIST"
 DATASET_TRAIN_CNT = -1
 DATASET_TEST_CNT = 1000
 
+lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+               datefmt='%m/%d/%Y-%H:%M:%S',
+               level=lg.DEBUG)
+
 if __name__ == "__main__":
     if DATASET not in DATASETS_LIST:
         raise ValueError("Given dataset is not supported: " + DATASET)
+    
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+    
+    lg.info("Using device:" + str(device))
     
     # No transformations done by default
     # TODO: Transformations might be applied throughout the CCNN code, check after implementation
@@ -64,8 +77,9 @@ if __name__ == "__main__":
     ccnn_model = ccnn.CCNN(
         train_dl=train_dl,
         test_dl=test_dl,
-        num_train=len(train_dset),
-        num_test=len(test_dset)
+        train_img_cnt=len(train_dset),
+        test_img_cnt=len(test_dset),
+        device=device
     )
     
     # TODO: Train CCNN
