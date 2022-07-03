@@ -1,6 +1,6 @@
 import _init_paths
-import bootstrap
-import ccnn
+from bootstrap import bootstrap
+from ccnn import ccnn
 
 import torch
 from torchvision import datasets, transforms
