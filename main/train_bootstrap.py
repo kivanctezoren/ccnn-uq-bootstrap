@@ -51,7 +51,12 @@ if __name__ == "__main__":
     train_dl = torch.utils.data.DataLoader(...)
     test_dl = torch.utils.data.DataLoader(...)
     
-    ccnn_model = ccnn.CCNN(...)
+    ccnn_model = ccnn.CCNN(
+        train_dl=train_dl,
+        test_dl=test_dl,
+        num_train=len(train_dset),
+        num_test=len(test_dset)
+    )
     
     # TODO: Train CCNN
     ...
