@@ -45,11 +45,10 @@ if __name__ == "__main__":
         raise ValueError("Unrecognized dataset name: " + DATASET)
     
     if DATASET_TRAIN_CNT > 0:
-        train_dset = torch.utils.data.Subset(train_dset, (0, DATASET_TRAIN_CNT))
+        train_dset = torch.utils.data.Subset(train_dset, range(0, DATASET_TRAIN_CNT))
     
     if DATASET_TEST_CNT > 0:
-        # FIXME: test_dl has only two images. Is there a problem here?
-        test_dset = torch.utils.data.Subset(test_dset, (0, DATASET_TEST_CNT))
+        test_dset = torch.utils.data.Subset(test_dset, range(0, DATASET_TEST_CNT))
     
     train_dl = torch.utils.data.DataLoader(
         dataset=train_dset,
