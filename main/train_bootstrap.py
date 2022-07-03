@@ -5,9 +5,11 @@ from ccnn import ccnn
 import torch
 from torchvision import datasets, transforms
 
-
+# Globals for configuration:
+BATCH_SIZE = 256
+NUM_WORKERS = 1
 DATASET_PATH = "datasets/"
-# Datasets that can be used
+# List of datasets that can be used
 DATASETS_LIST = ["MNIST", "FashionMNIST", "CIFAR10"]
 DATASET = "MNIST"
 DATASET_TRAIN_CNT = -1
@@ -46,10 +48,19 @@ if __name__ == "__main__":
         train_dset = torch.utils.data.Subset(train_dset, (0, DATASET_TRAIN_CNT))
     
     if DATASET_TEST_CNT > 0:
+        # FIXME: test_dl has only two images. Is there a problem here?
         test_dset = torch.utils.data.Subset(test_dset, (0, DATASET_TEST_CNT))
     
-    train_dl = torch.utils.data.DataLoader(...)
-    test_dl = torch.utils.data.DataLoader(...)
+    train_dl = torch.utils.data.DataLoader(
+        dataset=train_dset,
+        batch_size=BATCH_SIZE,
+        num_workers=NUM_WORKERS
+    )
+    test_dl = torch.utils.data.DataLoader(
+        dataset=test_dset,
+        batch_size=BATCH_SIZE,
+        num_workers=NUM_WORKERS
+    )
     
     ccnn_model = ccnn.CCNN(
         train_dl=train_dl,
