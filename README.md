@@ -30,6 +30,8 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 @TODO: Explain your code & directory structure and how other people can run it.
 
+@TODO: Update/recreate environment.yaml when releasing with `conda env export > environment.yaml`
+
 We have used Python 3.9 with the following packages to run the code:
 
 * ...
