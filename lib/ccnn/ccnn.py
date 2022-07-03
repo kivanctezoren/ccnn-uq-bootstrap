@@ -1,4 +1,6 @@
 #from math_utils import ...
+
+import logging as lg
 import torch.utils.data
 
 # CCNN is defined for two layers, additional methods are required for adding more.
@@ -6,6 +8,10 @@ import torch.utils.data
 MULTILAYER_METHODS = ["ZHANG", "TRANSFER_LRN"]
 # "ZHANG": Layer generation method proposed in the original CCNN paper by Zhang et al.
 # "TRANSF_LRN": The transfer learning method proposed by Du et al.
+
+lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+               datefmt='%m/%d/%Y-%H:%M:%S',
+               level=lg.INFO)
 
 
 class CCNN:
@@ -26,6 +32,7 @@ class CCNN:
         self.num_test = num_test
 
         self.layer_count = 0
+        self.n = self.num_train + self.num_test
         
         if multilayer_method == "ZHANG":
             # Generate first layer
@@ -66,6 +73,36 @@ class CCNN:
         :return: None.
         """
         
+        lg.info("Begin generating layer #" + str(self.layer_count + 1) + ".")
+        
+        lg.info("Reading the dataset...")
+        x_train = ...
+        x_test = ...
+        
+        x_raw = ...
+        label = ...
+        
+        lg.info("Detecting image parameters...")
+        ...
+        
+        lg.info("Constructing the patches...")
+        ...
+        
+        lg.info("Applying local contrast normalization and ZCA whitening...")
+        ...
+        
+        lg.info("Creating features...")
+        ...
+        
+        lg.info("Applying normalization...")
+        ...
+        
+        lg.info("Learning filters...")
+        ...
+        
+        lg.info("Applying filters...")
         ...
         
         self.layer_count += 1
+        
+        lg.info("Done layer generation #" + str(self.layer_count + 1) + ".")
