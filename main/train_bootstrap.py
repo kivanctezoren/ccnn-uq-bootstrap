@@ -1,10 +1,9 @@
 import _init_paths
-
-import torch
-import torchvision
-
 import bootstrap
 import ccnn
+
+import torch
+from torchvision import datasets, transforms
 
 
 DATASET_PATH = "datasets/"
@@ -19,18 +18,27 @@ if __name__ == "__main__":
         raise ValueError("Given dataset is not supported: " + DATASET)
     
     # No transformations done by default
-    train_transform = None
-    test_transform = None
+    # TODO: Transformations might be applied throughout the CCNN code, check after implementation
+    train_transform_list = []
+    test_transform_list = []
+    
+    # Add tensor conversion
+    train_transform_list.append(transforms.ToTensor())
+    test_transform_list.append(transforms.ToTensor())
+    
+    # Compose transformations
+    train_transform = transforms.Compose(train_transform_list)
+    test_transform = transforms.Compose(test_transform_list)
     
     if DATASET == "MNIST":
-        train_dset = torchvision.datasets.MNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
-        test_dset = torchvision.datasets.MNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
+        train_dset = datasets.MNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
+        test_dset = datasets.MNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
     elif DATASET == "FashionMNIST":
-        train_dset = torchvision.datasets.FashionMNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
-        test_dset = torchvision.datasets.FashionMNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
+        train_dset = datasets.FashionMNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
+        test_dset = datasets.FashionMNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
     elif DATASET == "CIFAR10":
-        train_dset = torchvision.datasets.CIFAR10(DATASET_PATH, train=True, transform=train_transform, download=True)
-        test_dset = torchvision.datasets.CIFAR10(DATASET_PATH, train=False, transform=test_transform, download=True)
+        train_dset = datasets.CIFAR10(DATASET_PATH, train=True, transform=train_transform, download=True)
+        test_dset = datasets.CIFAR10(DATASET_PATH, train=False, transform=test_transform, download=True)
     else:
         raise ValueError("Unrecognized dataset name: " + DATASET)
     
