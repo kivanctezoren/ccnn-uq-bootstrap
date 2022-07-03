@@ -58,7 +58,7 @@ class CCNN:
                        # max_channel: int = 16
                        ):
         """
-        Train and add a layer to the CCNN.
+        Train and add a layer to the CCNN with the method proposed by Zhang et al. in paper ...
         
         :param patch_radius: ...
         :param nystrom_dim: ...
@@ -76,11 +76,23 @@ class CCNN:
         lg.info("Begin generating layer #" + str(self.layer_count + 1) + ".")
         
         lg.info("Reading the dataset...")
-        x_train = ...
-        x_test = ...
+        x_train = []
+        x_test = []
+        labels = []
         
-        x_raw = ...
-        label = ...
+        for inp, lbl in self.train_dl:
+            x_train.append(inp)
+            labels.append(lbl)
+        
+        for inp, lbl in self.test_dl:
+            x_test.append(inp)
+            labels.append(lbl)
+        
+        x_train = torch.vstack(x_train)
+        x_test = torch.vstack(x_test)
+        
+        x_raw = torch.cat((x_train, x_test))
+        labels = torch.Tensor(labels)
         
         lg.info("Detecting image parameters...")
         ...
