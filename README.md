@@ -42,6 +42,11 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 @TODO: Provide your references here.
 
+`main/_init_paths` adapted from bag of tricks...
+
+CCNN adapted from [zhang](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py) ...
+
+
 # Contact
 
 @TODO: Provide your names & email addresses and any other info with which people can contact you.

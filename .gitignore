@@ -1,5 +1,7 @@
 datasets/
 output/
 
+*/__pycache__/*
+
 # PyCharm files
 .idea
