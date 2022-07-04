@@ -239,8 +239,6 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
     # TODO: Process as tensor rather than ndarray. Change return value too
     x_train = x_train.cpu().numpy()
     x_test = x_test.cpu().numpy()
-    y_train = y_train.cpu().numpy()
-    y_test = y_test.cpu().numpy()
     
     n_train = x_train.shape[0]
     cropped_d1 = int(d1*ratio*ratio)
