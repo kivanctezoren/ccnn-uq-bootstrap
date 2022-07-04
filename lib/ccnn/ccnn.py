@@ -51,7 +51,8 @@ class CCNN:
             raise ValueError("Unrecognized CCNN layer addition method in first layer generation: " + multilayer_method)
         
         # TODO add fc
-        
+
+    # TODO: Save reduced input & learned features
     def generate_layer(self,
                        patch_radius: int = 2,
                        nystrom_dim: int = 200,
@@ -63,9 +64,7 @@ class CCNN:
                        crop_ratio: float = 1.,
                        n_iter: int = 5000,
                        chunk_size: int = 5000,
-                       # max_channel: int = 16,
-                       load_features: bool = False,
-                       features_path: str = "output/features/"
+                       # max_channel: int = 16
                        ):
         """
         Train and add a layer to the CCNN with the method proposed by Zhang et al. in paper ...
@@ -80,8 +79,6 @@ class CCNN:
         :param crop_ratio: ...
         :param n_iter: ...
         :param chunk_size: ...
-        :param load_features: ...
-        :param features_path: ...
         :return: None.
         """
         
@@ -157,52 +154,48 @@ class CCNN:
 
         lg.debug("patch shape after normalization & whitening: " + str(patch.shape))
         
-        if load_features:
-            # TODO: Load from storage
-            pass
-        else:
-            lg.info("Creating features...")
-            transformer = [0]
-            base = 0
-            feature_dim = nystrom_dim
-            x_reduced = torch.zeros((self.img_cnt, pool_cnt * feature_dim), dtype=torch.float16, device=self.device)
-            
-            while base < self.img_cnt:
-                lg.debug("Sample ID: " + str(base) + "-" + str(min(self.img_cnt, base + chunk_size)))
-                x_reduced[base:min(self.img_cnt, base + chunk_size)], transformer = transform_and_pooling(
-                    patch=patch[base:min(self.img_cnt, base + chunk_size)],
-                    transformer=transformer,
-                    selected_group_size=[channel_cnt],  # Always 1?
-                    gamma=gamma,
-                    nystrom_dim=nystrom_dim,
-                    patch_per_side=patch_cnt_one_side,
-                    pooling_size=pooling_size,
-                    pooling_stride=pooling_stride
-                )
-            
-            lg.info("Applying normalization...")
-            x_reduced = x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim))
-            x_reduced -= torch.mean(x_reduced, axis=0)
-            x_reduced /= la.norm(x_reduced) / math.sqrt(self.img_cnt * pool_cnt)
-            x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
-            
-            lg.info("Learning filters...")
-            labels_binarized = label_binarize(labels, classes=range(0, 10))
-            filter = low_rank_matrix_regression(
-                # Split and pass concatenated sets
-                x_train=x_reduced[0:self.train_img_cnt],
-                y_train=labels_binarized[0:self.train_img_cnt],
-                x_test=x_reduced[self.train_img_cnt:],
-                y_test=labels_binarized[self.train_img_cnt:],
-                
-                d1=pool_cnt,
-                d2=feature_dim,
-                n_iter=n_iter,
-                reg=regularization_param,
-                learning_rate=learning_rate,
-                ratio=crop_ratio
+        lg.info("Creating features...")
+        transformer = [0]
+        base = 0
+        feature_dim = nystrom_dim
+        x_reduced = torch.zeros((self.img_cnt, pool_cnt * feature_dim), dtype=torch.float16, device=self.device)
+        
+        while base < self.img_cnt:
+            lg.debug("Sample ID: " + str(base) + "-" + str(min(self.img_cnt, base + chunk_size)))
+            x_reduced[base:min(self.img_cnt, base + chunk_size)], transformer = transform_and_pooling(
+                patch=patch[base:min(self.img_cnt, base + chunk_size)],
+                transformer=transformer,
+                selected_group_size=[channel_cnt],  # Always 1?
+                gamma=gamma,
+                nystrom_dim=nystrom_dim,
+                patch_per_side=patch_cnt_one_side,
+                pooling_size=pooling_size,
+                pooling_stride=pooling_stride
             )
         
+        lg.info("Applying normalization...")
+        x_reduced = x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim))
+        x_reduced -= torch.mean(x_reduced, axis=0)
+        x_reduced /= la.norm(x_reduced) / math.sqrt(self.img_cnt * pool_cnt)
+        x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
+        
+        lg.info("Learning filters...")
+        labels_binarized = label_binarize(labels, classes=range(0, 10))
+        filter = low_rank_matrix_regression(
+            # Split and pass concatenated sets
+            x_train=x_reduced[0:self.train_img_cnt],
+            y_train=labels_binarized[0:self.train_img_cnt],
+            x_test=x_reduced[self.train_img_cnt:],
+            y_test=labels_binarized[self.train_img_cnt:],
+            
+            d1=pool_cnt,
+            d2=feature_dim,
+            n_iter=n_iter,
+            reg=regularization_param,
+            learning_rate=learning_rate,
+            ratio=crop_ratio
+        )
+    
         filter_dim = filter.shape[0]
         
         lg.info("Applying filters...")
@@ -211,8 +204,6 @@ class CCNN:
         output = torch.transpose(output, 1, 2)  # Transpose last 2 dimensions
         
         lg.info("Feature dimension: " + str(output[0].size))
-        
-        # TODO: Save learned features
         
         self.layer_count += 1
         
