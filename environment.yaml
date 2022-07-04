@@ -1,4 +1,4 @@
-name: ccnn-bstrap-uq
+name: ceng501-uq-bstrap
 channels:
   - pytorch
   - defaults
@@ -21,12 +21,15 @@ dependencies:
   - gnutls=3.6.15=he1e5248_0
   - idna=3.3=pyhd3eb1b0_0
   - intel-openmp=2021.4.0=h06a4308_3561
+  - joblib=1.1.0=pyhd3eb1b0_0
   - jpeg=9e=h7f8727e_0
   - lame=3.100=h7b6447c_0
   - lcms2=2.12=h3be6417_0
   - ld_impl_linux-64=2.38=h1181459_1
   - libffi=3.3=he6710b0_2
   - libgcc-ng=11.2.0=h1234567_1
+  - libgfortran-ng=7.5.0=ha8ba4b0_17
+  - libgfortran4=7.5.0=ha8ba4b0_17
   - libgomp=11.2.0=h1234567_1
   - libiconv=1.16=h7f8727e_2
   - libidn2=2.3.2=h7f8727e_0
@@ -61,9 +64,12 @@ dependencies:
   - pytorch-mutex=1.0=cuda
   - readline=8.1.2=h7f8727e_1
   - requests=2.28.0=py39h06a4308_0
+  - scikit-learn=1.0.2=py39h51133e4_1
+  - scipy=1.7.3=py39hc147768_0
   - setuptools=61.2.0=py39h06a4308_0
   - six=1.16.0=pyhd3eb1b0_1
   - sqlite=3.38.5=hc218d9a_0
+  - threadpoolctl=2.2.0=pyh0d69192_0
   - tk=8.6.12=h1ccaba5_0
   - torchaudio=0.12.0=py39_cu102
   - torchvision=0.13.0=py39_cu102
