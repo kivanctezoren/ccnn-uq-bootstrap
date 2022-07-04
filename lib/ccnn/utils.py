@@ -11,6 +11,8 @@ lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 
+# TODO: Most matrices should be processed as Torch tensors rather than NumPy ndarrays to use GPU
+
 
 class RandomFourierTransformer:
     transform_matrix = 0
@@ -46,8 +48,6 @@ def get_pixel_vector(center_x, center_y, radius, image_width):
 
 
 def zca_whitening(inputs):
-    # TODO: Process as tensor rather than ndarray. Change return value too
-    inputs = inputs.cpu().numpy()
     inputs -= np.mean(inputs, axis=0)
     sigma = np.dot(inputs.T, inputs) / inputs.shape[0]
     u, s, v = np.linalg.svd(sigma)
@@ -60,7 +60,7 @@ def zca_whitening(inputs):
         inputs[i:next_i] = np.dot(inputs[i:next_i], zca_matrix.T)
         i = next_i
 
-    return torch.from_numpy(inputs)
+    return inputs
 
 
 def euclidean_proj_simplex(v, s=1):
