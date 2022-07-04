@@ -1,4 +1,4 @@
-name: ceng501-uq-bstrap
+name: ccnn-bstrap-uq
 channels:
   - pytorch
   - defaults
