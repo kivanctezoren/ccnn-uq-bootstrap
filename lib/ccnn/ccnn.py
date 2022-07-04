@@ -211,16 +211,21 @@ class CCNN:
         filter_dim = filter_weight.shape[0]
         
         lg.info("Applying filters...")
-        output = torch.dot(x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim)), filter_weight.T)
-        output = torch.reshape(output, (self.img_cnt, filter_dim))
-        output = torch.transpose(output, 1, 2)  # Transpose last 2 dimensions
+        # TODO: Process as tensor rather than ndarray
+        x_reduced = x_reduced.cpu().numpy()
+        output = np.dot(x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim)), filter_weight.T)
+        output = np.reshape(output, (self.img_cnt, filter_dim))
+        output = np.transpose(output, (0, 2, 1))  # Transpose last 2 dimensions ( torch.transpose(output, 1, 2) )
+        # TODO: Process as tensor rather than ndarray
+        x_reduced = torch.Tensor(x_reduced, device=self.device)
         
         lg.info("Feature dimension: " + str(output[0].size))
         lg.debug("output shape:", output.shape)
         
         self.layer_count += 1
-        self.filter_weight = filter_weight
-        self.last_layer_output = output
+        # TODO: Process as tensor rather than ndarray
+        self.filter_weight = torch.from_numpy(filter_weight)
+        self.last_layer_output = torch.from_numpy(output)
         
         lg.info("Done layer generation #" + str(self.layer_count) + ".")
         
