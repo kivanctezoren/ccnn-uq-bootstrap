@@ -4,7 +4,8 @@ import math
 import numpy as np
 import torch.utils.data
 
-from .math_utils import get_pixel_vector
+from numpy import linalg as la
+from .math_utils import get_pixel_vector, zca_whitening
 
 # CCNN is defined for two layers, additional methods are required for adding more.
 # Strings indicating the methods:
@@ -143,7 +144,13 @@ class CCNN:
         lg.debug("patch shape: " + str(patch.shape))
         
         lg.info("Applying local contrast normalization and ZCA whitening...")
-        ...
+        patch = patch.reshape((self.img_cnt * patch_cnt, channel_cnt * patch_pixel_cnt))
+        patch -= np.mean(patch, axis=1).reshape((patch.shape[0], 1))
+        patch /= la.norm(patch, axis=1).reshape(patch.shape[0], 1) + 0.1
+        patch = zca_whitening(patch)
+        patch = patch.reshape((self.img_cnt, patch_cnt, channel_cnt, patch_pixel_cnt))
+
+        lg.debug("patch shape after normalization & whitening: " + str(patch.shape))
         
         lg.info("Creating features...")
         ...
