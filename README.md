@@ -34,10 +34,23 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 We have used Python 3.9 with the following packages to run the code:
 
-* ...
-* ...
+* numexpr
+* numpy
+* pytorch
+* scikit-learn
+* torchvision
 
-Our environment can be cloned using Conda and the `environment.yaml` file using the following command:
+To install these packages with Conda, run
+
+```conda create --name ccnn-bstrap-uq scikit-learn numpy numexpr```
+
+Then install pytorch by using the desired command from [their website](https://pytorch.org/get-started/locally/).
+We have used CUDA 10.2:
+
+```conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch```
+
+
+If desired, our environment can be cloned using Conda and the `environment.yaml` file using the following command:
 
 ```conda env create -f environment.yaml```
 
