@@ -4,14 +4,13 @@ import numexpr as ne
 import numpy as np
 import time
 
+import torch
 from numpy import linalg as la
 
 lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 
-
-# TODO: Check for numpy to torch conversion in tensors to enable GPU usage
 
 class RandomFourierTransformer:
     transform_matrix = 0
@@ -47,6 +46,8 @@ def get_pixel_vector(center_x, center_y, radius, image_width):
 
 
 def zca_whitening(inputs):
+    # TODO: Process as tensor rather than ndarray. Change return value too
+    inputs = inputs.cpu().numpy()
     inputs -= np.mean(inputs, axis=0)
     sigma = np.dot(inputs.T, inputs) / inputs.shape[0]
     u, s, v = np.linalg.svd(sigma)
@@ -59,7 +60,7 @@ def zca_whitening(inputs):
         inputs[i:next_i] = np.dot(inputs[i:next_i], zca_matrix.T)
         i = next_i
 
-    return inputs
+    return torch.from_numpy(inputs)
 
 
 def euclidean_proj_simplex(v, s=1):
@@ -152,6 +153,9 @@ def project_to_trace_norm(A, trace_norm, d1, d2):
 
 def transform_and_pooling(patch, transformer, selected_group_size, gamma, nystrom_dim,
                           patch_per_side, pooling_size, pooling_stride):
+    # TODO: Process as tensor rather than ndarray. Change return value too
+    patch = patch.cpu().numpy()
+    
     n = patch.shape[0]
     patch_per_image = patch.shape[1]
     selected_channel_num = patch.shape[2]
@@ -203,7 +207,7 @@ def transform_and_pooling(patch, transformer, selected_group_size, gamma, nystro
     psi_pooling /= la.norm(psi_pooling) / math.sqrt(n*pooling_per_image)
     psi_pooling = psi_pooling.reshape((n, pooling_per_image*feature_dim))
 
-    return psi_pooling.astype(np.float16), transformer
+    return torch.from_numpy(psi_pooling.astype(np.float16)), transformer
 
 
 def central_crop(X, d1, d2, ratio):
@@ -232,6 +236,12 @@ def evaluate_classifier(x_train, x_test, y_train, y_test, A):
 
 
 def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_iter, learning_rate, ratio):
+    # TODO: Process as tensor rather than ndarray. Change return value too
+    x_train = x_train.cpu().numpy()
+    x_test = x_test.cpu().numpy()
+    y_train = y_train.cpu().numpy()
+    y_test = y_test.cpu().numpy()
+    
     n_train = x_train.shape[0]
     cropped_d1 = int(d1*ratio*ratio)
     A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
