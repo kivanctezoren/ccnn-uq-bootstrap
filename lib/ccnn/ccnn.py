@@ -1,5 +1,7 @@
 import logging as lg
 import math
+
+import numpy as np
 import torch.utils.data
 
 from numpy import linalg as la
@@ -147,11 +149,15 @@ class CCNN:
         lg.debug("patch shape: " + str(patch.shape))
         
         lg.info("Applying local contrast normalization and ZCA whitening...")
+        # TODO: Process as tensor rather than ndarray
+        patch = patch.cpu().numpy()
         patch = patch.reshape((self.img_cnt * patch_cnt, channel_cnt * patch_pixel_cnt))
-        patch -= torch.mean(patch, axis=1).reshape((patch.shape[0], 1))
+        patch -= np.mean(patch, axis=1).reshape((patch.shape[0], 1))
         patch /= la.norm(patch, axis=1).reshape(patch.shape[0], 1) + 0.1
-        patch = zca_whitening(patch)
+        patch = zca_whitening(patch).to(self.device)
         patch = patch.reshape((self.img_cnt, patch_cnt, channel_cnt, patch_pixel_cnt))
+        # TODO: Process as tensor rather than ndarray
+        patch = torch.Tensor(patch, device=self.device)
 
         lg.debug("patch shape after normalization & whitening: " + str(patch.shape))
         
@@ -175,10 +181,14 @@ class CCNN:
             )
         
         lg.info("Applying normalization...")
+        # TODO: Process as tensor rather than ndarray
+        x_reduced = x_reduced.cpu().numpy()
         x_reduced = x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim))
-        x_reduced -= torch.mean(x_reduced, axis=0)
+        x_reduced -= np.mean(x_reduced, axis=0)
         x_reduced /= la.norm(x_reduced) / math.sqrt(self.img_cnt * pool_cnt)
         x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
+        # TODO: Process as tensor rather than ndarray
+        x_reduced = torch.Tensor(x_reduced, device=self.device)
         
         lg.info("Learning filters...")
         labels_binarized = label_binarize(labels, classes=range(0, 10))
