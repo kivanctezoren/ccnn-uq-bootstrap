@@ -110,3 +110,52 @@ def transform_and_pooling(patch, transformer, selected_group_size, gamma, nystro
     psi_pooling = psi_pooling.reshape((n, pooling_per_image*feature_dim))
 
     return psi_pooling.astype(np.float16), transformer
+
+
+def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_iter, learning_rate, ratio):
+    n_train = x_train.shape[0]
+    cropped_d1 = int(d1*ratio*ratio)
+    A = np.zeros((9, cropped_d1*d2), dtype=np.float32) # 9-(d1*d2)
+    A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32) # 9-(d1*d2)
+    computation_time = 0
+
+    for t in range(n_iter):
+        mini_batch_size = 50
+        batch_size = 10
+
+        start = time.time()
+        for i in range(0, batch_size):
+            index = np.random.randint(0, n_train, mini_batch_size)
+            x_sample = random_crop(x_train[index], d1, d2, ratio) # batch-(d1*d2)
+            y_sample = y_train[index, 0:9] # batch-9
+
+            # stochastic gradient descent
+            XA = np.dot(x_sample, A.T)
+            eXA = ne.evaluate("exp(XA)")
+            # eXA = np.exp(XA)
+            eXA_sum = np.sum(eXA, axis=1).reshape((mini_batch_size, 1)) + 1
+            diff = ne.evaluate("eXA/eXA_sum - y_sample")
+            grad_A = np.dot(diff.T, x_sample) / mini_batch_size
+            # grad_A = np.dot((eXA/eXA_sum - y_sample).T, x_sample) / mini_batch_size
+            A -= learning_rate * grad_A
+
+        # projection to trace norm ball
+        A, U, s, V = project_to_trace_norm(A, reg, cropped_d1, d2)
+        end = time.time()
+        computation_time += end - start
+
+        A_sum += A
+        if (t+1) % 250 == 0:
+            dim = np.sum(s[0:25]) / np.sum(s)
+            A_avg = A_sum / 250
+            loss, error_train, error_test = evaluate_classifier(central_crop(x_train, d1, d2, ratio),
+                                                                central_crop(x_test, d1, d2, ratio), y_train, y_test, A_avg)
+            A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)
+
+            # debug
+            tprint("iter " + str(t+1) + ": loss=" + str(loss) + ", train=" + str(error_train) + ", test=" + str(error_test) + ", dim=" + str(dim))
+            # print(str(computation_time) + "\t" + str(error_test))
+
+    A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
+    dim = min(np.sum((s > 0).astype(int)), 25)
+    return V[0:dim]
