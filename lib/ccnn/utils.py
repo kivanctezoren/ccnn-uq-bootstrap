@@ -1,8 +1,14 @@
+import logging as lg
 import math
 import numexpr as ne
 import numpy as np
+import time
 
 from numpy import linalg as la
+
+lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+               datefmt='%m/%d/%Y-%H:%M:%S',
+               level=lg.DEBUG)
 
 
 # TODO: Check for numpy to torch conversion in tensors to enable GPU usage
@@ -54,6 +60,94 @@ def zca_whitening(inputs):
         i = next_i
 
     return inputs
+
+
+def euclidean_proj_simplex(v, s=1):
+    """ Compute the Euclidean projection on a positive simplex
+    Solves the optimisation problem (using the algorithm from [1]):
+        min_w 0.5 * || w - v ||_2^2 , s.t. \sum_i w_i = s, w_i >= 0
+    Parameters
+    ----------
+    v: (n,) numpy array,
+       n-dimensional vector to project
+    s: int, optional, default: 1,
+       radius of the simplex
+    Returns
+    -------
+    w: (n,) numpy array,
+       Euclidean projection of v on the simplex
+    Notes
+    -----
+    The complexity of this algorithm is in O(n log(n)) as it involves sorting v.
+    Better alternatives exist for high-dimensional sparse vectors (cf. [1])
+    However, this implementation still easily scales to millions of dimensions.
+    References
+    ----------
+    [1] Efficient Projections onto the .1-Ball for Learning in High Dimensions
+        John Duchi, Shai Shalev-Shwartz, Yoram Singer, and Tushar Chandra.
+        International Conference on Machine Learning (ICML 2008)
+        http://www.cs.berkeley.edu/~jduchi/projects/DuchiSiShCh08.pdf
+    """
+    assert s > 0, "Radius s must be strictly positive (%d <= 0)" % s
+    n, = v.shape  # will raise ValueError if v is not 1-D
+    # check if we are already on the simplex
+    if v.sum() == s and np.alltrue(v >= 0):
+        # best projection: itself!
+        return v
+    # get the array of cumulative sums of a sorted (decreasing) copy of v
+    u = np.sort(v)[::-1]
+    cssv = np.cumsum(u)
+    # get the number of > 0 components of the optimal solution
+    rho = np.nonzero(u * np.arange(1, n+1) > (cssv - s))[0][-1]
+    # compute the Lagrange multiplier associated to the simplex constraint
+    theta = (cssv[rho] - s) / (rho + 1.0)
+    # compute the projection by thresholding v using theta
+    w = (v - theta).clip(min=0)
+    return w
+
+
+def euclidean_proj_l1ball(v, s=1):
+    """ Compute the Euclidean projection on a L1-ball
+    Solves the optimisation problem (using the algorithm from [1]):
+        min_w 0.5 * || w - v ||_2^2 , s.t. || w ||_1 <= s
+    Parameters
+    ----------
+    v: (n,) numpy array,
+       n-dimensional vector to project
+    s: int, optional, default: 1,
+       radius of the L1-ball
+    Returns
+    -------
+    w: (n,) numpy array,
+       Euclidean projection of v on the L1-ball of radius s
+    Notes
+    -----
+    Solves the problem by a reduction to the positive simplex case
+    See also
+    --------
+    euclidean_proj_simplex
+    """
+    assert s > 0, "Radius s must be strictly positive (%d <= 0)" % s
+    _, = v.shape  # will raise ValueError if v is not 1-D
+    # compute the vector of absolute values
+    u = np.abs(v)
+    # check if v is already a solution
+    if u.sum() <= s:
+        # L1-norm is <= s
+        return v
+    # v is not already a solution: optimum lies on the boundary (norm == s)
+    # project *u* on the simplex
+    w = euclidean_proj_simplex(u, s=s)
+    # compute the solution to the original problem on v
+    w *= np.sign(v)
+    return w
+
+
+def project_to_trace_norm(A, trace_norm, d1, d2):
+    A = np.reshape(A, (9*d1, d2))
+    (U, s, V) = la.svd(A, full_matrices=False)
+    s = euclidean_proj_l1ball(s, s=trace_norm)
+    return np.reshape(np.dot(U, np.dot(np.diag(s), V)), (9, d1*d2)), U, s, V
 
 
 def transform_and_pooling(patch, transformer, selected_group_size, gamma, nystrom_dim,
@@ -112,11 +206,36 @@ def transform_and_pooling(patch, transformer, selected_group_size, gamma, nystro
     return psi_pooling.astype(np.float16), transformer
 
 
+def central_crop(X, d1, d2, ratio):
+    n = X.shape[0]
+    size = int(math.sqrt(d1))
+    cropped_size = int(size * ratio)
+    X = X.reshape((n, size, size, d2))
+    begin = int((size-cropped_size)/2)
+    return X[:, begin:begin+cropped_size, begin:begin+cropped_size].reshape((n, cropped_size*cropped_size*d2))
+
+
+def evaluate_classifier(x_train, x_test, y_train, y_test, A):
+    n_train = x_train.shape[0]
+    n_test = x_test.shape[0]
+    eXAY = np.exp(np.sum((np.dot(x_train, A.T)) * y_train[:, 0:9], axis=1))  # batch_size-9
+    eXA_sum = np.sum(np.exp(np.dot(x_train, A.T)), axis=1) + 1
+    loss = - np.average(np.log(eXAY/eXA_sum))
+
+    predict_train = np.concatenate((np.dot(x_train, A.T), np.zeros((n_train, 1), dtype=np.float32)), axis=1)
+    predict_test = np.concatenate((np.dot(x_test, A.T), np.zeros((n_test, 1), dtype=np.float32)), axis=1)
+
+    error_train = np.average(np.argmax(predict_train, axis=1) != np.argmax(y_train, axis=1).astype(int))
+    error_test = np.average(np.argmax(predict_test, axis=1) != np.argmax(y_test, axis=1).astype(int))
+
+    return loss, error_train, error_test
+
+
 def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_iter, learning_rate, ratio):
     n_train = x_train.shape[0]
     cropped_d1 = int(d1*ratio*ratio)
-    A = np.zeros((9, cropped_d1*d2), dtype=np.float32) # 9-(d1*d2)
-    A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32) # 9-(d1*d2)
+    A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
+    A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
     computation_time = 0
 
     for t in range(n_iter):
@@ -126,7 +245,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
         start = time.time()
         for i in range(0, batch_size):
             index = np.random.randint(0, n_train, mini_batch_size)
-            x_sample = random_crop(x_train[index], d1, d2, ratio) # batch-(d1*d2)
+            x_sample = x_train[index] # batch-(d1*d2)
             y_sample = y_train[index, 0:9] # batch-9
 
             # stochastic gradient descent
@@ -151,10 +270,10 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
             loss, error_train, error_test = evaluate_classifier(central_crop(x_train, d1, d2, ratio),
                                                                 central_crop(x_test, d1, d2, ratio), y_train, y_test, A_avg)
             A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)
-
-            # debug
-            tprint("iter " + str(t+1) + ": loss=" + str(loss) + ", train=" + str(error_train) + ", test=" + str(error_test) + ", dim=" + str(dim))
-            # print(str(computation_time) + "\t" + str(error_test))
+            
+            lg.info("iter " + str(t+1) + ": loss=" + str(loss) + ", train=" + str(error_train) + ", test="
+                    + str(error_test) + ", dim=" + str(dim))
+            # lg.info(str(computation_time) + "\t" + str(error_test))
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
     dim = min(np.sum((s > 0).astype(int)), 25)

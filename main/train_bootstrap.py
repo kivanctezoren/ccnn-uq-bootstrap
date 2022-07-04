@@ -32,9 +32,9 @@ if __name__ == "__main__":
     
     lg.info("Using device:" + str(device))
     
-    # No transformations done by default
-    # TODO: Transformations might be applied throughout the CCNN code, check after implementation
-    train_transform_list = []
+    train_transform_list = [
+        # transforms.RandomCrop(...)
+    ]
     test_transform_list = []
     
     # Add tensor conversion
