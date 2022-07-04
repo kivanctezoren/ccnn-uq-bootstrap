@@ -154,7 +154,7 @@ class CCNN:
         patch = patch.reshape((self.img_cnt * patch_cnt, channel_cnt * patch_pixel_cnt))
         patch -= np.mean(patch, axis=1).reshape((patch.shape[0], 1))
         patch /= la.norm(patch, axis=1).reshape(patch.shape[0], 1) + 0.1
-        patch = zca_whitening(patch).to(self.device)
+        patch = zca_whitening(patch)
         patch = patch.reshape((self.img_cnt, patch_cnt, channel_cnt, patch_pixel_cnt))
         # TODO: Process as tensor rather than ndarray
         patch = torch.Tensor(patch, device=self.device)
