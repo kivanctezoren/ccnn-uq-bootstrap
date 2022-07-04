@@ -5,7 +5,7 @@ import numpy as np
 import torch.utils.data
 
 from numpy import linalg as la
-from .math_utils import get_pixel_vector, zca_whitening
+from .utils import get_pixel_vector, zca_whitening, transform_and_pooling
 
 # CCNN is defined for two layers, additional methods are required for adding more.
 # Strings indicating the methods:
@@ -121,7 +121,7 @@ class CCNN:
         pool_cnt = (patch_cnt_one_side // pooling_stride) ** 2
         
         channel_cnt = x_raw.shape[1]
-        feature_dim = nystrom_dim  # Since there is a single channel ...?
+        # feature_dim = nystrom_dim  # Since there is a single channel ...?
 
         # Vectorize the inputs
         # TODO: Check whether this should be done
@@ -145,7 +145,7 @@ class CCNN:
         
         lg.info("Applying local contrast normalization and ZCA whitening...")
         patch = patch.reshape((self.img_cnt * patch_cnt, channel_cnt * patch_pixel_cnt))
-        patch -= np.mean(patch, axis=1).reshape((patch.shape[0], 1))
+        patch -= torch.mean(patch, axis=1).reshape((patch.shape[0], 1))
         patch /= la.norm(patch, axis=1).reshape(patch.shape[0], 1) + 0.1
         patch = zca_whitening(patch)
         patch = patch.reshape((self.img_cnt, patch_cnt, channel_cnt, patch_pixel_cnt))
@@ -153,7 +153,23 @@ class CCNN:
         lg.debug("patch shape after normalization & whitening: " + str(patch.shape))
         
         lg.info("Creating features...")
-        ...
+        transformer = [0]
+        base = 0
+        feature_dim = nystrom_dim
+        x_reduced = torch.zeros((self.img_cnt, pool_cnt * feature_dim), dtype=torch.float16, device=self.device)
+        
+        while base < self.img_cnt:
+            lg.debug("Sample ID: " + str(base) + "-" + str(min(self.img_cnt, base + chunk_size)))
+            x_reduced[base:min(self.img_cnt, base + chunk_size)], transformer = transform_and_pooling(
+                patch=patch[base:min(self.img_cnt, base + chunk_size)],
+                transformer=transformer,
+                selected_group_size=[channel_cnt],  # Always 1?
+                gamma=gamma,
+                nystrom_dim=nystrom_dim,
+                patch_per_side=patch_cnt_one_side,
+                pooling_size=pooling_size,
+                pooling_stride=pooling_stride
+            )
         
         lg.info("Applying normalization...")
         ...
