@@ -179,6 +179,7 @@ class CCNN:
                 pooling_size=pooling_size,
                 pooling_stride=pooling_stride
             )
+            base = min(self.img_cnt, base + chunk_size)
         
         lg.info("Applying normalization...")
         # TODO: Process as tensor rather than ndarray
