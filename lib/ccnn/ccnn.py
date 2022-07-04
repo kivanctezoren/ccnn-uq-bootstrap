@@ -39,6 +39,9 @@ class CCNN:
         
         self.layer_count = 0
         self.img_cnt = self.train_img_cnt + self.test_img_cnt
+
+        self.filter_weight = None
+        self.last_layer_output = None
         
         if multilayer_method == "ZHANG":
             # Generate first layer
@@ -49,8 +52,6 @@ class CCNN:
             self.layer_count += 1
         else:
             raise ValueError("Unrecognized CCNN layer addition method in first layer generation: " + multilayer_method)
-        
-        # TODO add fc
 
     # TODO: Save reduced input & learned features
     def generate_layer(self,
@@ -181,7 +182,7 @@ class CCNN:
         
         lg.info("Learning filters...")
         labels_binarized = label_binarize(labels, classes=range(0, 10))
-        filter = low_rank_matrix_regression(
+        filter_weight = low_rank_matrix_regression(
             # Split and pass concatenated sets
             x_train=x_reduced[0:self.train_img_cnt],
             y_train=labels_binarized[0:self.train_img_cnt],
@@ -196,15 +197,24 @@ class CCNN:
             ratio=crop_ratio
         )
     
-        filter_dim = filter.shape[0]
+        filter_dim = filter_weight.shape[0]
         
         lg.info("Applying filters...")
-        output = torch.dot(x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim)), filter.T)
+        output = torch.dot(x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim)), filter_weight.T)
         output = torch.reshape(output, (self.img_cnt, filter_dim))
         output = torch.transpose(output, 1, 2)  # Transpose last 2 dimensions
         
         lg.info("Feature dimension: " + str(output[0].size))
+        lg.debug("output shape:", output.shape)
         
         self.layer_count += 1
+        self.filter_weight = filter_weight
+        self.last_layer_output = output
         
         lg.info("Done layer generation #" + str(self.layer_count) + ".")
+        
+    def forward(self, inp):
+        if self.filter_weight is None:
+            raise Exception("The CCNN has got no layers.")
+        
+        return torch.dot(inp, self.filter_weight.T)
