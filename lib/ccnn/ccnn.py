@@ -143,7 +143,7 @@ class CCNN:
         for y in range(0, patch_cnt_one_side):
             for x in range(0, patch_cnt_one_side):
                 for i in range(0, channel_cnt):
-                    # FIXME: Check image param. usage. May be forming patches wrong
+                    # TODO: Check image param. usage. May be forming patches wrong
                     indices = get_pixel_vector(x + patch_radius, y + patch_radius, patch_radius, img_size)
                     patch[:, x + y * patch_cnt_one_side, i] = x_raw[:, i, indices]
         
@@ -187,8 +187,9 @@ class CCNN:
         x_reduced = x_reduced.cpu().numpy()
         x_reduced = x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim))
         x_reduced -= np.mean(x_reduced, axis=0)
-        frobenius_norm = la.norm(x_reduced)  # FIXME: Returns inf
-        x_reduced /= (frobenius_norm / math.sqrt(self.img_cnt * pool_cnt))  # FIXME: Returns 0 matrix since norm is inf
+        # frobenius_norm = la.norm(x_reduced)  # FIXME: Returns inf
+        # FIXME: Returns 0 matrix since norm is inf. Skip for now
+        # x_reduced /= (frobenius_norm / math.sqrt(self.img_cnt * pool_cnt))
         x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
         # TODO: Process as tensor rather than ndarray
         x_reduced = torch.Tensor(x_reduced, device=self.device)
