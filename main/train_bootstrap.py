@@ -79,7 +79,7 @@ if __name__ == "__main__":
         test_dl=test_dl,
         train_img_cnt=len(train_dset),
         test_img_cnt=len(test_dset),
-        device=device
+        device=torch.device("cpu")  # Temporarily use CPU only. TODO: Change after implementing torch tensors
     )
     
     # TODO: Train CCNN
