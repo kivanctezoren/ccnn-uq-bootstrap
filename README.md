@@ -16,15 +16,24 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 @TODO: Explain the original method.
 
+![bootstrap-algorithm](readme_assets/bootstrap-algorithm.png "Figure 1")
+<figcaption align="center">Figure 1 - CCNN Bootstrap Algorithm</figcaption>
+
+<...We have implemented the CCNN bootstrapping algorithm presented in the paper...>
+
 ## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
+
+<CCNN dataset usage assumptions? batch size, vectorization etc.?>
 
 # 3. Experiments and results
 
 ## 3.1. Experimental setup
 
 @TODO: Describe the setup of the original paper and whether you changed any settings.
+
+We have omitted <...> step in input normalization due to an issue...
 
 ## 3.2. Running the code
 
@@ -58,11 +67,18 @@ To activate:
 
 ```conda activate ccnn-bstrap-uq```
 
-<Run `<...>` to replicate <...> experiment...>
+<Run `<...>.py` to replicate the <...> experiment...>:
+
+```python3 <...>.py```
 
 ## 3.3. Results
 
 @TODO: Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
+
+![paper-results](readme_assets/<...>.png "Figure 2")
+<figcaption align="center">Figure 2 - Results of <...> from the paper</figcaption>
+
+<...discussion...>
 
 # 4. Conclusion
 
@@ -80,3 +96,5 @@ CCNN and related math func.s adapted from [zhang](https://github.com/zhangyuc/CC
 # Contact
 
 @TODO: Provide your names & email addresses and any other info with which people can contact you.
+
+Selim Kuzucu:
