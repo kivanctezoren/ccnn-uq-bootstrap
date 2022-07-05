@@ -186,7 +186,7 @@ class CCNN:
         x_reduced = x_reduced.cpu().numpy()
         x_reduced = x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim))
         x_reduced -= np.mean(x_reduced, axis=0)
-        x_reduced /= la.norm(x_reduced) / math.sqrt(self.img_cnt * pool_cnt)
+        x_reduced /= la.norm(x_reduced) / math.sqrt(self.img_cnt * pool_cnt)  # FIXME: Returns 0 matrix
         x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
         # TODO: Process as tensor rather than ndarray
         x_reduced = torch.Tensor(x_reduced, device=self.device)
