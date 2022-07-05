@@ -214,7 +214,7 @@ class CCNN:
     
         filter_dim = filter_weight.shape[0]
         
-        lg.debug("filter_weight shape: " + str(filter_weight))
+        lg.debug("filter_weight shape: " + str(filter_weight.shape))
         
         # TODO: Should this step be split into forward func?
         lg.info("Applying filters...")
