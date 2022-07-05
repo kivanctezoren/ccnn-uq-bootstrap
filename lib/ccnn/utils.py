@@ -257,6 +257,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
             y_sample = y_train[index, 0:9] # batch-9
 
             # stochastic gradient descent
+            # FIXME: XA is a 0 matrix
             XA = np.dot(x_sample, A.T)
             eXA = ne.evaluate("exp(XA)")
             # eXA = np.exp(XA)
