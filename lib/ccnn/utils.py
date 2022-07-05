@@ -279,8 +279,8 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
                                                                 central_crop(x_test, d1, d2, ratio), y_train, y_test, A_avg)
             A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)
             
-            lg.info("iter " + str(t+1) + ": loss=" + str(loss) + ", train=" + str(error_train) + ", test="
-                    + str(error_test) + ", dim=" + str(dim))
+            lg.info("iteration " + str(t+1) + ": loss=" + str(loss) + ", train error=" + str(error_train)
+                    + ", test error=" + str(error_test) + ", dim=" + str(dim))
             # lg.info(str(computation_time) + "\t" + str(error_test))
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
