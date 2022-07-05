@@ -193,6 +193,7 @@ class CCNN:
         x_reduced = x_reduced.reshape((self.img_cnt, pool_cnt * feature_dim))
         # TODO: Process as tensor rather than ndarray
         x_reduced = torch.Tensor(x_reduced, device=self.device)
+        lg.debug("x_reduced shape: " + str(x_reduced.shape))
         
         lg.info("Learning filters...")
         labels_binarized = label_binarize(labels, classes=range(0, 10))
@@ -213,6 +214,9 @@ class CCNN:
     
         filter_dim = filter_weight.shape[0]
         
+        lg.debug("filter_weight shape: " + str(filter_weight))
+        
+        # TODO: Should this step be split into forward func?
         lg.info("Applying filters...")
         # TODO: Process as tensor rather than ndarray
         x_reduced = x_reduced.cpu().numpy()
