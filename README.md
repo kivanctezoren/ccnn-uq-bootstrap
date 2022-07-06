@@ -4,7 +4,7 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 # 1. Introduction
 
-This work aims to reproduce the results of [TEXT TO SHOW](actual URL to navigate) by XXX, YYY, ZZZ, and further provide an alternative implementation for it.
+This work aims to reproduce the results of [Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks](https://ojs.aaai.org/index.php/AAAI/article/view/17434) by XXX, YYY, ZZZ, and further provide an alternative implementation for it.
 
 ## 1.1. Paper summary
 
