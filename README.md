@@ -26,14 +26,14 @@ The original method that the authors propose is summarized neatly on the followi
 ![bootstrap-algorithm](readme_assets/bootstrap-algorithm.png "Figure 1")
 <figcaption align="center">Figure 1 - CCNN Bootstrap Algorithm</figcaption>
 
-Verbally:
+Verbally, the method work as:
 
-* They first train the network in order to have the weights for the first bootstrap sampling's warm-start
-* Secondly they start the bootstrap sampling by initializing the model with previously saved parameters
-* Then they obtain some subset of dataset to train the network for that particular bootstrap
-* After each sampling iteration, they save the weights of the previous model for future use and save the predictions for statistics
-* Finally they output the predictions of the model with their intervals
-*  
+* First, train the network in order to have the weights for the first bootstrap sampling's warm-start
+* Secondly, start the bootstrap sampling by initializing the model with previously saved parameters
+* Then obtain some subset of dataset to train the network for that particular bootstrap
+* After each sampling iteration, save the weights of the previous model for future use and save the predictions for statistics
+* Finally, output the predictions of the model with their intervals
+
 ## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
