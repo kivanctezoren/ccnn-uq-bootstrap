@@ -45,6 +45,7 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
 * Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
 * Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
  $$ L = \frac{1}{B} \sum_{b=1}^B \sum_{i=1}^N H(p_i^b, y_i)$$
+ where $B$ stands for the number of bootstrap sampling iterations, $p^b_i$ stands for the probability output of the classifier for the given input and $y_i$ stands for the ground truth label.
  
 ## 2.2. Our interpretation 
 
