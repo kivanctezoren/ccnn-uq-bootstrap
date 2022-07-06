@@ -48,7 +48,7 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
  
 ## 2.2. Our interpretation 
 
-We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ). Furthermore, we could not obtain the results for the [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method as it is an expensive method for us to run on Google Colaboratory machines.
+We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ). We also could not obtain the results for the [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method as it is an expensive method for us to run on Google Colaboratory machines. Furthermore, the Appendix for the paper wasn't available so we could not find the proof or the methods that they specifically applied to get their transfer learning approaches running.
 
 <CCNN dataset usage assumptions? batch size, vectorization etc.?>
 
