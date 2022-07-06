@@ -46,6 +46,8 @@ if __name__ == "__main__":
     train_transform = transforms.Compose(train_transform_list)
     test_transform = transforms.Compose(test_transform_list)
     
+    lg.info("Setting up the dataset...")
+    
     if DATASET == "MNIST":
         train_dset = datasets.MNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
         test_dset = datasets.MNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
