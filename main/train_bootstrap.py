@@ -6,6 +6,7 @@ from torchvision import datasets, transforms
 
 from bootstrap import bootstrap
 from ccnn import ccnn
+from cnn import cnn
 
 # Globals for configuration:
 BATCH_SIZE = 256
@@ -48,12 +49,15 @@ if __name__ == "__main__":
     if DATASET == "MNIST":
         train_dset = datasets.MNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
         test_dset = datasets.MNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
+        class_cnt = 10
     elif DATASET == "FashionMNIST":
         train_dset = datasets.FashionMNIST(DATASET_PATH, train=True, transform=train_transform, download=True)
         test_dset = datasets.FashionMNIST(DATASET_PATH, train=False, transform=test_transform, download=True)
+        class_cnt = 10
     elif DATASET == "CIFAR10":
         train_dset = datasets.CIFAR10(DATASET_PATH, train=True, transform=train_transform, download=True)
         test_dset = datasets.CIFAR10(DATASET_PATH, train=False, transform=test_transform, download=True)
+        class_cnt = 10
     else:
         raise ValueError("Unrecognized dataset name: " + DATASET)
     
@@ -74,6 +78,10 @@ if __name__ == "__main__":
         num_workers=NUM_WORKERS
     )
     
+    lg.info("Using dataset: " + DATASET)
+    
+    lg.info("Begin bootstrap with CCNN...")
+    
     ccnn_model = ccnn.CCNN(
         train_dl=train_dl,
         test_dl=test_dl,
@@ -82,8 +90,12 @@ if __name__ == "__main__":
         device=torch.device("cpu")  # Temporarily use CPU only. TODO: Change after implementing torch tensors
     )
     
-    # TODO: Train CCNN
+    # TODO: Apply bootstrap
     ...
+
+    lg.info("Begin bootstrap with LeNet...")
     
+    cnn_model = cnn.LeNet(class_cnt)
+
     # TODO: Apply bootstrap
     ...
