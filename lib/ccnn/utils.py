@@ -245,6 +245,8 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
     A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
     A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
     computation_time = 0
+    error_train = 1
+    error_test = 1
 
     for t in range(n_iter):
         mini_batch_size = 50
@@ -275,8 +277,14 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
         if (t+1) % 250 == 0:
             dim = np.sum(s[0:25]) / np.sum(s)
             A_avg = A_sum / 250
-            loss, error_train, error_test = evaluate_classifier(central_crop(x_train, d1, d2, ratio),
-                                                                central_crop(x_test, d1, d2, ratio), y_train, y_test, A_avg)
+            loss, error_train, error_test = evaluate_classifier(
+                central_crop(x_train, d1, d2, ratio),
+                central_crop(x_test, d1, d2, ratio),
+                y_train,
+                y_test,
+                A_avg
+            )
+            
             A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)
             
             lg.info("iteration " + str(t+1) + ": loss=" + str(loss) + ", train error=" + str(error_train)
@@ -284,5 +292,14 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
             # lg.info(str(computation_time) + "\t" + str(error_test))
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
+    
+    _, error_train, error_test = evaluate_classifier(
+        central_crop(x_train, d1, d2, ratio),
+        central_crop(x_test, d1, d2, ratio),
+        y_train,
+        y_test,
+        A_avg
+    )
+    
     dim = min(np.sum((s > 0).astype(int)), 25)
-    return V[0:dim]
+    return V[0:dim], error_train, error_test

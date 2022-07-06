@@ -19,12 +19,19 @@ lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
                level=lg.DEBUG)
 
 
+class CCNNState:
+    def __init__(self, filter_weights, fc_state,):
+        self.filter_weights = filter_weights
+        self.fc_state = fc_state
+
+
 class CCNN:
     def __init__(self,
                  train_dl: torch.utils.data.DataLoader,
                  test_dl: torch.utils.data.DataLoader,
                  train_img_cnt: int,
                  test_img_cnt: int,
+                 state: CCNNState = None,
                  multilayer_method: str = "ZHANG",
                  device: torch.device = torch.device("cpu")
                  ):
@@ -36,24 +43,34 @@ class CCNN:
         
         self.train_img_cnt = train_img_cnt
         self.test_img_cnt = test_img_cnt
-        
-        self.device = device
-        
-        self.layer_count = 0
+
         self.img_cnt = self.train_img_cnt + self.test_img_cnt
 
-        self.filter_weight = None
+        self.state = state
+        self.layer_count = 0
         self.last_layer_output = None
-        
-        if multilayer_method == "ZHANG":
-            # Generate first layer
-            self.generate_layer()  # Increments layer_count too
-        elif multilayer_method == "TRANSFER_LRN":
-            # TODO: Take a pretrained model and use its state
+        self.train_accuracy = 0
+        self.test_accuracy = 0
+        self.device = device
+
+        if self.state is None:
+            self.state = CCNNState(filter_weights=[], fc_state=None)
             
-            self.layer_count += 1
+            if multilayer_method == "ZHANG":
+                # Generate first layer
+                self.generate_layer()  # Increments layer_count too
+            elif multilayer_method == "TRANSFER_LRN":
+                # TODO: Take a pretrained model and use its state
+                
+                self.layer_count += 1
+            else:
+                raise ValueError("Unrecognized CCNN layer addition method in first layer generation: "
+                                 + multilayer_method)
         else:
-            raise ValueError("Unrecognized CCNN layer addition method in first layer generation: " + multilayer_method)
+            for fw in self.state.filter_weights:
+                # TODO: Save filters with their generation param.s in CCNNState object. Use these params instead of the
+                #   default ones below.
+                self.generate_layer(filter_weight=fw)
 
     # TODO: Save reduced input & learned features
     def generate_layer(self,
@@ -67,6 +84,7 @@ class CCNN:
                        crop_ratio: float = 1.,
                        n_iter: int = 5000,
                        chunk_size: int = 5000,
+                       filter_weight=None
                        # max_channel: int = 16
                        ):
         """
@@ -82,6 +100,7 @@ class CCNN:
         :param crop_ratio: ...
         :param n_iter: ...
         :param chunk_size: ...
+        :param filter_weight = None
         :return: None.
         """
         
@@ -195,23 +214,32 @@ class CCNN:
         x_reduced = torch.Tensor(x_reduced, device=self.device)
         lg.debug("x_reduced shape: " + str(x_reduced.shape))
         
-        lg.info("Learning filters...")
+        lg.info("Creating filters...")
         labels_binarized = label_binarize(labels, classes=range(0, 10))
-        filter_weight = low_rank_matrix_regression(
-            # Split and pass concatenated sets
-            x_train=x_reduced[0:self.train_img_cnt],
-            y_train=labels_binarized[0:self.train_img_cnt],
-            x_test=x_reduced[self.train_img_cnt:],
-            y_test=labels_binarized[self.train_img_cnt:],
+        if filter_weight is None:
+            # Train from scratch
+            filter_weight, train_error, test_error = low_rank_matrix_regression(
+                # Split and pass concatenated sets
+                x_train=x_reduced[0:self.train_img_cnt],
+                y_train=labels_binarized[0:self.train_img_cnt],
+                x_test=x_reduced[self.train_img_cnt:],
+                y_test=labels_binarized[self.train_img_cnt:],
+                
+                d1=pool_cnt,
+                d2=feature_dim,
+                n_iter=n_iter,
+                reg=regularization_param,
+                learning_rate=learning_rate,
+                ratio=crop_ratio
+            )
             
-            d1=pool_cnt,
-            d2=feature_dim,
-            n_iter=n_iter,
-            reg=regularization_param,
-            learning_rate=learning_rate,
-            ratio=crop_ratio
-        )
-    
+            lg.info("Got train accuracy: " + str(1 - train_error))
+            lg.info("Got test accuracy: " + str(1 - test_error))
+        else:
+            # Use given filter_weight.
+            train_error = 1  # Not calculated
+            test_error = 1  # Not calculated
+        
         filter_dim = filter_weight.shape[0]
         
         lg.debug("filter_weight shape: " + str(filter_weight.shape))
@@ -227,17 +255,14 @@ class CCNN:
         x_reduced = torch.Tensor(x_reduced, device=self.device)
         
         lg.info("Feature dimension: " + str(output[0].size))
-        lg.debug("output shape:", output.shape)
+        lg.debug("output shape: " + str(output.shape))
         
         self.layer_count += 1
         # TODO: Process as tensor rather than ndarray
-        self.filter_weight = torch.from_numpy(filter_weight)
+        self.state.filter_weights.append(torch.from_numpy(filter_weight))
         self.last_layer_output = torch.from_numpy(output)
         
         lg.info("Done layer generation #" + str(self.layer_count) + ".")
         
-    def forward(self, inp):
-        if self.filter_weight is None:
-            raise Exception("The CCNN has got no layers.")
-        
-        return torch.dot(inp, self.filter_weight.T)
+        self.train_accuracy = 1 - train_error
+        self.test_accuracy = 1 - test_error
