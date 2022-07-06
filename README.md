@@ -8,6 +8,7 @@ This work aims to reproduce the results of and further provide an alternative im
 
 ## 1.1. Paper summary
 
+Uncertainty quantification is an important task for almost any critical application that neural networks are in use. Despite that, the literature regarding it is freshly developing. There are many novel methods aiming to quantify uncertainty, however most of them do not have the theoretical guarantees the quality of the quantification process. 
 
 
 # 2. The method and our interpretation
