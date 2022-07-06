@@ -40,7 +40,7 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
 
 * Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
 * Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
-* $$ a_1$$
+ $$ L = \sum a_1$$
 ## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
