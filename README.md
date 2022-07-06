@@ -15,7 +15,9 @@ Uncertainty quantification is an important task for almost any critical applicat
 
 ## 2.1. The original method
 
-The authors utilize two 
+The method enjoys two nice properties coming from the CCNNs and warm-start bootstrapping:
+
+* item1
 
 The original method that the authors propose is summarized neatly on the following Figure 1:
 
