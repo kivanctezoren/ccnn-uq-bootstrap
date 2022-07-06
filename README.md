@@ -63,9 +63,11 @@ We have omitted <...> step in input normalization due to an issue...
 
 ## 3.2. Running the code
 
-@TODO: Explain your code & directory structure and how other people can run it.
-
-@TODO: Update/recreate environment.yaml when releasing with `conda env export > environment.yaml`
+The implementation is split into directories:
+* `bootstrap`: Contains functions for bootstrapping operations.
+* `CCN`: Contains the implementation for the LeNet model used in the paper.
+* `CCNN`: Contains the CCNN implementation and functions required by the CCNN. Largely adapted from
+[Zhang et al.](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py)
 
 We have used Python 3.9 with the following packages to run the code:
 
@@ -93,9 +95,10 @@ To activate:
 
 ```conda activate ccnn-bstrap-uq```
 
-<Run `<...>.py` to replicate the <...> experiment...>:
+Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to the desired dataset to replicate our results presented in
+[section 3.3](#33-results):
 
-```python3 <...>.py```
+```python3 main/trainbootstrap.py```
 
 ## 3.3. Results
 
@@ -116,7 +119,7 @@ To activate:
 
 `main/_init_paths` adapted from bag of tricks...
 
-CCNN and related math func.s adapted from [zhang](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py) ...
+CCNN and related math func.s adapted from [zhang](<paper link>) ...
 
 
 # Contact
