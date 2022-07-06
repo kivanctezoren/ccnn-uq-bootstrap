@@ -38,7 +38,9 @@ The authors further propose a novel transfer learning method, which is to utiliz
 
 The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method and a shallow CNN, [LeNet-5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)[4] as baselines to compare their methods against. In order to do so, they consider the following metrics:
 
-* 
+* Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
+* Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
+* $$ a_1$$
 ## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
