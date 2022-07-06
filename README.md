@@ -17,7 +17,9 @@ Uncertainty quantification is an important task for almost any critical applicat
 
 The method enjoys two nice properties coming from the CCNNs and warm-start bootstrapping:
 
-* item1
+* Firstly, he convexity of CCNNs both guarantee the statistical validity and theoretical background for the method and also the global optimum for the subsampled dataset.
+
+* Secondly, the quantification process is quick since the method utilizes a warm-strat approach during bootstrapping, allowing it to initialize itself through the parameters of the previous solution.
 
 The original method that the authors propose is summarized neatly on the following Figure 1:
 
