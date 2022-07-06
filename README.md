@@ -36,7 +36,7 @@ Verbally, the method work as:
 * After each sampling iteration, save the weights of the previous model for future use and save the predictions for statistics
 * Finally, output the predictions of the model with their intervals
 
-The authors further propose a novel transfer learning method, which is to utilize a backbone that was trained for a similar task before (i.e VGG16 pretrained on ImageNet) and add a CCNN layer right after the last convolutional layer of it. It is worth noting that if the backbone's training data somehow has intersections with the bootstrapped dataset, then the theoretical validity of this method would become invalid. In case of an inavailability of such pretrained networks, the authors further propose the following three techniques to obtain similar pretrained networks:
+The authors further propose a novel transfer learning method, which is to utilize a backbone that was trained for a similar task before (e.g VGG16 pretrained on ImageNet) and add a CCNN layer right after the last convolutional layer of it. It is worth noting that if the backbone's training data somehow has intersections with the bootstrapped dataset, then the theoretical validity of this method would become invalid. In case of an inavailability of such pretrained networks, the authors further propose the following three techniques to obtain similar pretrained networks:
 * Train & Forget: Start training a CNN on a certain dataset, after a certain number of epochs replace the dataset with another one, train until model outputs almost random guesses
 * Train & Flip: Start training a CNN with the original labels of a dataset, then randomly flip labels at a certain time and continue training until the network overfits
 * Train & Perturb: After training a CNN, add random perturbations to its weights
@@ -47,6 +47,7 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
 * Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
 * Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
  $$ L = \frac{1}{B} \sum_{b=1}^B \sum_{i=1}^N H(p_i^b, y_i)$$
+ where $H(;)$ is the cross-entropy function, $B$ stands for the number of bootstrap sampling iterations, $p^b_i$ stands for the probability output of the classifier for the given input and $y_i$ stands for the ground truth label.
  
 ## 2.2. Our interpretation 
 
