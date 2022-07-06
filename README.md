@@ -34,6 +34,11 @@ Verbally, the method work as:
 * After each sampling iteration, save the weights of the previous model for future use and save the predictions for statistics
 * Finally, output the predictions of the model with their intervals
 
+The authors further propose a novel transfer learning method, which is to utilize a backbone that was trained for a similar task before (i.e VGG16 pretrained on ImageNet) and add a CCNN layer right after the last convolutional layer of it. It is worth noting that if the backbone's training data somehow has intersections with the bootstrapped dataset, then the theoretical validity of this method would become invalid.
+
+The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf) method and a shallow CNN, [LeNet-5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf) as baselines to compare their methods against. In order to do so, they consider the following metrics:
+
+* 
 ## 2.2. Our interpretation 
 
 @TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
