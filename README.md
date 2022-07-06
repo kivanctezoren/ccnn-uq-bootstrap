@@ -34,16 +34,21 @@ Verbally, the method work as:
 * After each sampling iteration, save the weights of the previous model for future use and save the predictions for statistics
 * Finally, output the predictions of the model with their intervals
 
-The authors further propose a novel transfer learning method, which is to utilize a backbone that was trained for a similar task before (i.e VGG16 pretrained on ImageNet) and add a CCNN layer right after the last convolutional layer of it. It is worth noting that if the backbone's training data somehow has intersections with the bootstrapped dataset, then the theoretical validity of this method would become invalid.
+The authors further propose a novel transfer learning method, which is to utilize a backbone that was trained for a similar task before (i.e VGG16 pretrained on ImageNet) and add a CCNN layer right after the last convolutional layer of it. It is worth noting that if the backbone's training data somehow has intersections with the bootstrapped dataset, then the theoretical validity of this method would become invalid. In case of an inavailability of such pretrained networks, the authors further propose the following three techniques to obtain similar pretrained networks:
+* Train & Forget: Start training a CNN on a certain dataset, after a certain number of epochs replace the dataset with another one, train until model outputs almost random guesses
+* Train & Flip: Start training a CNN with the original labels of a dataset, then randomly flip labels at a certain time and continue training until the network overfits
+* Train & Perturb: After training a CNN, add random perturbations to its weights
+
 
 The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method and a shallow CNN, [LeNet-5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)[4] as baselines to compare their methods against. In order to do so, they consider the following metrics:
 
 * Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
 * Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
  $$ L = \frac{1}{B} \sum_{b=1}^B \sum_{i=1}^N H(p_i^b, y_i)$$
+ 
 ## 2.2. Our interpretation 
 
-@TODO: Explain the parts that were not clearly explained in the original paper and how you interpreted them.
+We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ). Furthermore, we could not obtain the results for the [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method as it is an expensive method for us to run on Google Colaboratory machines. Finally, we also had problems reproducing the results 
 
 <CCNN dataset usage assumptions? batch size, vectorization etc.?>
 
