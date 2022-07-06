@@ -1,3 +1,5 @@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/safe-email@1.1.1/dist/safe-email.min.js"></script>
+
 # Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks
 
 This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.edu.tr/~skalkan/DL/) project for reproducing a paper without an implementation. See [CENG501 (Spring 2022) Project List](https://github.com/CENG501-Projects/CENG501-Spring2022) for a complete list of all paper reproduction projects.
@@ -120,6 +122,8 @@ CCNN and related math func.s adapted from [zhang](https://github.com/zhangyuc/CC
 
 # Contact
 
-@TODO: Provide your names & email addresses and any other info with which people can contact you.
+You can contact us through e-mail:
 
-Selim Kuzucu:
+Selim Kuzucu: <a title="Email" href="#" data-email_b64="c2VsaW02ODZrdXp1Y3VAZ21haWwuY29t"></a>
+
+Kıvanç Tezören: <a title="Email" href="#" data-email_b64="a2l2YW5jdGV6b3JlbkBnbWFpbC5jb20="></a>
