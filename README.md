@@ -4,11 +4,11 @@ This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.
 
 # 1. Introduction
 
-@TODO: Introduce the paper (inc. where it is published) and describe your goal (reproducibility).
+This work aims to reproduce the results of [TEXT TO SHOW](actual URL to navigate) by XXX, YYY, ZZZ, and further provide an alternative implementation for it.
 
 ## 1.1. Paper summary
 
-@TODO: Summarize the paper, the method & its contributions in relation with the existing literature.
+
 
 # 2. The method and our interpretation
 
