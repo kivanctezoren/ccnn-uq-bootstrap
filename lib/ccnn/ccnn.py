@@ -169,7 +169,7 @@ class CCNN:
         x_reduced = torch.zeros((self.img_cnt, pool_cnt * feature_dim), dtype=torch.float16, device=self.device)
         
         while base < self.img_cnt:
-            lg.debug("Sample ID: " + str(base) + "-" + str(min(self.img_cnt, base + chunk_size)))
+            lg.info("Processing samples: " + str(base) + "-" + str(min(self.img_cnt, base + chunk_size)))
             x_reduced[base:min(self.img_cnt, base + chunk_size)], transformer = transform_and_pooling(
                 patch=patch[base:min(self.img_cnt, base + chunk_size)],
                 transformer=transformer,
@@ -221,7 +221,7 @@ class CCNN:
         # TODO: Process as tensor rather than ndarray
         x_reduced = x_reduced.cpu().numpy()
         output = np.dot(x_reduced.reshape((self.img_cnt * pool_cnt, feature_dim)), filter_weight.T)
-        output = np.reshape(output, (self.img_cnt, filter_dim))
+        output = np.reshape(output, (self.img_cnt, pool_cnt, filter_dim))
         output = np.transpose(output, (0, 2, 1))  # Transpose last 2 dimensions ( torch.transpose(output, 1, 2) )
         # TODO: Process as tensor rather than ndarray
         x_reduced = torch.Tensor(x_reduced, device=self.device)
