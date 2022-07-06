@@ -1,5 +1,3 @@
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/safe-email@1.1.1/dist/safe-email.min.js"></script>
-
 # Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks
 
 This readme file is an outcome of the [CENG501 (Spring 2022)](https://ceng.metu.edu.tr/~skalkan/DL/) project for reproducing a paper without an implementation. See [CENG501 (Spring 2022) Project List](https://github.com/CENG501-Projects/CENG501-Spring2022) for a complete list of all paper reproduction projects.
@@ -19,7 +17,7 @@ Uncertainty quantification is an important task for almost any critical applicat
 
 The method enjoys two nice properties coming from the CCNNs and warm-start bootstrapping:
 
-* Firstly, he convexity of CCNNs both guarantee the statistical validity and theoretical background for the method and also the global optimum for the subsampled dataset.
+* Firstly, the convexity of CCNNs both guarantee the statistical validity and theoretical background for the method and also the global optimum for the subsampled dataset.
 
 * Secondly, the quantification process is quick since the method utilizes a warm-strat approach during bootstrapping, allowing it to initialize itself through the parameters of the previous solution.
 
@@ -45,7 +43,7 @@ The authors further propose a novel transfer learning method, which is to utiliz
 The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method and a shallow CNN, [LeNet-5](http://yann.lecun.com/exdb/publis/pdf/lecun-01a.pdf)[4] as baselines to compare their methods against. In order to do so, they consider the following metrics:
 
 * Average length of the 95% confidence interval of the predictions of the model, shorter interval implying lower uncertainty
-* Average log-likelihood, i.e the average cross-entropy by each bootstrap sampling iteration, or more formally:
+* Average log-likelihood, i.e. the average cross-entropy by each bootstrap sampling iteration, or more formally:
  $$ L = \frac{1}{B} \sum_{b=1}^B \sum_{i=1}^N H(p_i^b, y_i)$$
  where $H(;)$ is the cross-entropy function, $B$ stands for the number of bootstrap sampling iterations, $p^b_i$ stands for the probability output of the classifier for the given input and $y_i$ stands for the ground truth label.
  
@@ -125,6 +123,6 @@ CCNN and related math func.s adapted from [zhang](https://github.com/zhangyuc/CC
 
 You can contact us through e-mail:
 
-Selim Kuzucu: <a title="Email" href="#" data-email_b64="c2VsaW02ODZrdXp1Y3VAZ21haWwuY29t"></a>
+Selim Kuzucu: selim686kuzucu@gmail.com
 
-Kıvanç Tezören: <a title="Email" href="#" data-email_b64="a2l2YW5jdGV6b3JlbkBnbWFpbC5jb20="></a>
+Kıvanç Tezören: kivanctezoren@gmail.com
