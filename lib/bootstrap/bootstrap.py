@@ -131,7 +131,7 @@ def cnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, crit
     lower = np.percentile(dist, alpha)
     upper = np.percentile(dist, alpha_)
     std_err_dist = np.std(dist) / np.sqrt(len(dist))
-    std_err_like_dist = np.std(likelihood_dist) / np.sqrt(len(likelihood_dist))
+    # std_err_like_dist = np.std(likelihood_dist) / np.sqrt(len(likelihood_dist))
     lg.info(f"(Lower bound: {lower}, Upper bound: {upper})")
     lg.info(f"Average interval length is: {(upper - lower) / (B * num_class)}")
     
