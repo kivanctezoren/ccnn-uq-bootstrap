@@ -65,7 +65,7 @@ We dealt with or skipped the aforementioned issues through the following assumpt
 * We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
 * We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
-* Number of samples to be obtained at each bootstrap sampling was assumed as 200, since 100 felt a bit short experimentally and more sampling made it rough for us to obtain the results in the plausible time interval.
+* Number of samples to be obtained at each bootstrap sampling was assumed as 200, since 100 felt a bit short of experimental performance expectations and more sampling made it rough for us to obtain the results in the plausible time interval.
 * We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train & Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
 
 # 3. Experiments and results
