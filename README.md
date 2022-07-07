@@ -78,7 +78,13 @@ The authors propose the following setups for the experiments for the aforementio
 * LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
 * For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer and horse from CIFAR10) for another 30 epochs.
 * For train & flip, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with randomly flipped labels for another 30 epochs.
-* For train & perturb, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, adding random Gaussian perturbations (with σ = 0.5 and σ = 0.1 for Fashion MNIST and CIFAR10, respectively) to all of the weights. 
+
+
+We have also followed the exact same settings, with the following additional assumptions and tools:
+* PyTorch and Google Colaboratory was used as the experiment platform.
+* Number of samples to be obtained at each bootstrap sampling was assumed as 200, learning rate was used as 5e-4 and batch size was used as 32.
+* For the additional LeNet-5 that we report the results of, we used the number of convolution filters (6,16,120) with a kernel size of (5,5).
+
 
 On top of these, following datasets were used:
 * MNIST (LeCun et al. 1998)[http://yann.lecun.com/exdb/mnist/] with 10 classes of handwritten digits. The images’ size is 28x28 and in gray scale. There are 60,000 images for training and 1,000 images for testing. Used for obtaining the results of CCNN, LeNet-5 and LeNet-5 (from the paper) in accuracy, average log likelihood and average interval length metrics. It was also used as part of the train & forget approach's forget strategy.
