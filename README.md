@@ -190,6 +190,11 @@ Our results are ......
 
 [7] Krizhevksy, A., (2009). Learning Multiple Layers of Features From Tiny Images
 
+The following have also helped us a great deal on our journey, special thanks to:
+* Ian Whitestone for his illustrative bootstrapping [demo](https://ianwhitestone.work/how-many-bootstrap-samples/)
+* Eryk Lewinson for the LeNet-5 hyperparameters that we used for some of our experiments [link](https://towardsdatascience.com/implementing-yann-lecuns-lenet-5-in-pytorch-5e05a0911320)
+* @TODO Kıvanç istediğini yaz buraya da
+
 `main/_init_paths` adapted from bag of tricks...
 
 CCNN and related math func.s adapted from [zhang](<paper link>) ...
