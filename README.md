@@ -115,7 +115,6 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 
 ## 3.3. Results
 
-@TODO: Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
 
 ![paper-results](readme_assets/<...>.png "Figure 2")
 <figcaption align="center">Figure 2 - Results of <...> from the paper</figcaption>
