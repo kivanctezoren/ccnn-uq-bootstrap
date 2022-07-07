@@ -148,5 +148,65 @@ def cnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, crit
     lg.info(f"{repeats} inputs seen more than once")
 
 
-def ccnn_bootstrap():
+def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size=16, X=200, conf_level=95, B=100, epochs=5, num_class=10, device=None):
+    alpha = (100 - conf_level) / 2
+    alpha_ = 100 - alpha
+    
+    # predictions
+    dist = np.array([])
+    likelihood_dist = np.array([])
+    # accumulated_loss = 0.0
+    likelihood_sum = 0.0
+    
+    repeats = 0
+    repetitions = {}
+    for i in range(len(train_data)):
+        repetitions[str(i)] = 0
+
+        # sample B times
+        for b in range(B):
+            sample_data, repetitions = get_sample_data(train_data, repetitions,
+                                                       X, batch_size)
+    
+            lg.info(f"Begin bootstrap {b + 1}.")
+            
+            # Create new CCNN, use previous state.
+            # It generates a new layer & trains it.
+            
+            # Save CCNN state.
+    
+            lg.info(f"Test scores for bootstrap {b + 1}:")
+            # Get scores. use ccnn output instead of compute preds test
+            #_, loss, acc, dist, likelihood, likelihood_dist = compute_preds_test(model, valid_dataloader, criterion,
+            #                                                                     dist,
+            #                                                                     device)
+            
+            # loss = ...
+            # acc = ...
+            dist = ...  # Array of <???>
+            likelihood = ...
+            # likelihood_dist = ...
+            
+            # accumulated_loss += loss
+            likelihood_sum += likelihood
+
+        lower = np.percentile(dist, alpha)
+        upper = np.percentile(dist, alpha_)
+        std_err_dist = np.std(dist) / np.sqrt(len(dist))
+        # std_err_like_dist = np.std(likelihood_dist) / np.sqrt(len(likelihood_dist))
+        lg.info(f"(Lower bound: {lower}, Upper bound: {upper})")
+        lg.info(f"Average interval length is: {(upper - lower) / (B * num_class)}")
+
+        # Torch implementation, gives different results from the paper
+        # lg.info(f"Average log likelihood is: {accumulated_loss / B}")
+        # Numpy implementation, gives results similar to those in the paper
+        lg.info(f"Average log likelihood is: {likelihood_sum / B}")
+
+        lg.info(f"Standard error for average interval length: {std_err_dist}")
+        # lg.info(f"Standard error for average likelihood: {std_err_like_dist}")
+        for _, v in repetitions.items():
+            if v > 1:
+                repeats += 1
+        lg.info(f"{repeats} inputs seen more than once")
+
     return ...

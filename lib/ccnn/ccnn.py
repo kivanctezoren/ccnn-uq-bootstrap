@@ -20,9 +20,9 @@ lg.basicConfig(format='%(levelname)s\t- %(asctime)s\t- %(message)s',
 
 
 class CCNNState:
-    def __init__(self, filter_weights, fc_state,):
+    def __init__(self, filter_weights, A_weights):
         self.filter_weights = filter_weights
-        self.fc_state = fc_state
+        self.A_weights = A_weights
 
 
 class CCNN:
@@ -33,6 +33,7 @@ class CCNN:
                  test_img_cnt: int,
                  state: CCNNState = None,
                  multilayer_method: str = "ZHANG",
+                 n_iter: int = 5000,
                  device: torch.device = torch.device("cpu")
                  ):
         if multilayer_method not in MULTILAYER_METHODS:
@@ -51,14 +52,15 @@ class CCNN:
         self.last_layer_output = None
         self.train_accuracy = 0
         self.test_accuracy = 0
+        self.log_likelihood = 0
         self.device = device
 
         if self.state is None:
-            self.state = CCNNState(filter_weights=[], fc_state=None)
+            self.state = CCNNState(filter_weights=[], A_weights=[])
             
             if multilayer_method == "ZHANG":
                 # Generate first layer
-                self.generate_layer()  # Increments layer_count too
+                self.generate_layer(n_iter=n_iter)  # Increments layer_count too
             elif multilayer_method == "TRANSFER_LRN":
                 # TODO: Take a pretrained model and use its state
                 
@@ -67,10 +69,13 @@ class CCNN:
                 raise ValueError("Unrecognized CCNN layer addition method in first layer generation: "
                                  + multilayer_method)
         else:
-            for fw in self.state.filter_weights:
+            if len(self.state.filter_weights) != len(self.state.A_weights):
+                raise Exception
+                
+            for i, fw in enumerate(self.state.filter_weights):
                 # TODO: Save filters with their generation param.s in CCNNState object. Use these params instead of the
                 #   default ones below.
-                self.generate_layer(filter_weight=fw)
+                self.generate_layer(filter_weight=fw, A_weight=self.state.A_weights[i])
 
     # TODO: Save reduced input & learned features
     def generate_layer(self,
@@ -82,27 +87,13 @@ class CCNN:
                        regularization_param: int = 100.,
                        learning_rate: float = 0.2,
                        crop_ratio: float = 1.,
-                       n_iter: int = 5000,
+                       n_iter: int = 2500,
                        chunk_size: int = 5000,
-                       filter_weight=None
+                       filter_weight=None,
+                       A_weight=None
                        # max_channel: int = 16
                        ):
-        """
-        Train and add a layer to the CCNN with the method proposed by Zhang et al. in paper ...
-        
-        :param patch_radius: ...
-        :param nystrom_dim: ...
-        :param pooling_size: ...
-        :param pooling_stride: ...
-        :param gamma: ...
-        :param regularization_param: ...
-        :param learning_rate: ...
-        :param crop_ratio: ...
-        :param n_iter: ...
-        :param chunk_size: ...
-        :param filter_weight = None
-        :return: None.
-        """
+        """Train and add a layer to the CCNN with the method proposed by Zhang et al."""
         
         lg.info("Begin generating layer #" + str(self.layer_count + 1) + ".")
         
@@ -217,28 +208,54 @@ class CCNN:
         lg.info("Creating filters...")
         labels_binarized = label_binarize(labels, classes=range(0, 10))
         if filter_weight is None:
-            # Train from scratch
-            filter_weight, train_error, test_error = low_rank_matrix_regression(
-                # Split and pass concatenated sets
-                x_train=x_reduced[0:self.train_img_cnt],
-                y_train=labels_binarized[0:self.train_img_cnt],
-                x_test=x_reduced[self.train_img_cnt:],
-                y_test=labels_binarized[self.train_img_cnt:],
-                
-                d1=pool_cnt,
-                d2=feature_dim,
-                n_iter=n_iter,
-                reg=regularization_param,
-                learning_rate=learning_rate,
-                ratio=crop_ratio
-            )
+            if A_weight is None:
+                # Train from scratch
+                filter_weight, train_error, test_error, likelihood, A = low_rank_matrix_regression(
+                    # Split and pass concatenated sets
+                    x_train=x_reduced[0:self.train_img_cnt],
+                    y_train=labels_binarized[0:self.train_img_cnt],
+                    x_test=x_reduced[self.train_img_cnt:],
+                    y_test=labels_binarized[self.train_img_cnt:],
+                    prev_A=None,
+                    
+                    d1=pool_cnt,
+                    d2=feature_dim,
+                    n_iter=n_iter,
+                    reg=regularization_param,
+                    learning_rate=learning_rate,
+                    ratio=crop_ratio
+                )
+
+                # TODO: Process as tensor rather than ndarray
+                self.state.A_weights.append(torch.from_numpy(A))
+            else:
+                # Train continuing from previous weights
+                filter_weight, train_error, test_error, likelihood, A = low_rank_matrix_regression(
+                    # Split and pass concatenated sets
+                    x_train=x_reduced[0:self.train_img_cnt],
+                    y_train=labels_binarized[0:self.train_img_cnt],
+                    x_test=x_reduced[self.train_img_cnt:],
+                    y_test=labels_binarized[self.train_img_cnt:],
+                    prev_A=A_weight,
+    
+                    d1=pool_cnt,
+                    d2=feature_dim,
+                    n_iter=n_iter,
+                    reg=regularization_param,
+                    learning_rate=learning_rate,
+                    ratio=crop_ratio
+                )
             
             lg.info("Got train accuracy: " + str(1 - train_error))
             lg.info("Got test accuracy: " + str(1 - test_error))
         else:
             # Use given filter_weight.
+            # TODO: Process as tensor rather than ndarray
+            filter_weight = filter_weight.cpu().numpy()
+            
             train_error = 1  # Not calculated
             test_error = 1  # Not calculated
+            likelihood = ...
         
         filter_dim = filter_weight.shape[0]
         
@@ -266,3 +283,4 @@ class CCNN:
         
         self.train_accuracy = 1 - train_error
         self.test_accuracy = 1 - test_error
+        self.log_likelihood = likelihood

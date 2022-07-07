@@ -229,21 +229,34 @@ def evaluate_classifier(x_train, x_test, y_train, y_test, A):
     predict_train = np.concatenate((np.dot(x_train, A.T), np.zeros((n_train, 1), dtype=np.float32)), axis=1)
     predict_test = np.concatenate((np.dot(x_test, A.T), np.zeros((n_test, 1), dtype=np.float32)), axis=1)
 
-    error_train = np.average(np.argmax(predict_train, axis=1) != np.argmax(y_train, axis=1).astype(int))
-    error_test = np.average(np.argmax(predict_test, axis=1) != np.argmax(y_test, axis=1).astype(int))
+    top_pred_train = np.argmax(predict_train, axis=1)
+    top_pred_test = np.argmax(predict_test, axis=1)
+    
+    label_train = np.argmax(y_train, axis=1).astype(int)
+    label_test = np.argmax(y_test, axis=1).astype(int)
 
-    return loss, error_train, error_test
+    error_train = np.average(top_pred_train != label_train)
+    error_test = np.average(top_pred_test != label_test)
+    
+    likelihood_est = -np.sum(label_test * np.log(top_pred_test + 1e-9)) / n_test
+
+    return loss, error_train, error_test, likelihood_est
 
 
-def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_iter, learning_rate, ratio):
+def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2, reg, n_iter, learning_rate, ratio):
     # TODO: Process as tensor rather than ndarray. Change return value too
     x_train = x_train.cpu().numpy()
     x_test = x_test.cpu().numpy()
     
     n_train = x_train.shape[0]
     cropped_d1 = int(d1*ratio*ratio)
-    A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
-    A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
+    
+    if prev_A is None:
+        A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
+        A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
+    else:
+        A = ...
+        A_sum = ...
     computation_time = 0
     error_train = 1
     error_test = 1
@@ -277,7 +290,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
         if (t+1) % 250 == 0:
             dim = np.sum(s[0:25]) / np.sum(s)
             A_avg = A_sum / 250
-            loss, error_train, error_test = evaluate_classifier(
+            loss, error_train, error_test, _ = evaluate_classifier(
                 central_crop(x_train, d1, d2, ratio),
                 central_crop(x_test, d1, d2, ratio),
                 y_train,
@@ -293,7 +306,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
     
-    _, error_train, error_test = evaluate_classifier(
+    _, error_train, error_test, likelihood_est = evaluate_classifier(
         central_crop(x_train, d1, d2, ratio),
         central_crop(x_test, d1, d2, ratio),
         y_train,
@@ -302,4 +315,4 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, d1, d2, reg, n_
     )
     
     dim = min(np.sum((s > 0).astype(int)), 25)
-    return V[0:dim], error_train, error_test
+    return V[0:dim], error_train, error_test, likelihood_est, A_avg
