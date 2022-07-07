@@ -94,9 +94,6 @@ On top of these, following datasets were used:
  
 
 
-
-We have omitted <...> step in input normalization due to an issue...
-
 ## 3.2. Running the code
 
 The implementation is split into directories:
@@ -166,7 +163,9 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | Trainf&Flip        | --.--%        | -......                | -......                 |
 
 <figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
-<...discussion...>
+
+@TODO KIVANÇ RESULT DISCUSSION
+Our results are ......
 
 # 4. Conclusion
 
