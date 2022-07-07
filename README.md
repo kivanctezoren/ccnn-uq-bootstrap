@@ -50,7 +50,7 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
 ## 2.2. Our interpretation 
 
 We encountered the following problems understanding and implementing the methods and techniques that the authors utilized:
-* We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ).
+* @TODO KIVANÇ We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ).
 * Appendix for the paper wasn't available at the AAAI'21 conference archive, so we could not find the proof or the methods they specifically used for the theoretical basis of their transfer learning approaches.
 * LeNet-5 that they provided was actually not the best in terms of its parameters (such as filters and kernel size) for the architecture.
 * The average interval length was calculated as the average of interval lengths in the entire dataset, without considering interval length per each class.
@@ -61,7 +61,7 @@ We encountered the following problems understanding and implementing the methods
 * Train & Forget method was also difficult to implement due to the CIFAR-10 dataset of PyTorch holding its targets as lists rather than numpy arrays, in contrast with the Fashion MNIST dataset.
 
 We dealt with or skipped the aforementioned issues through the following assumptions and strategies:
-* KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
+* @TODO KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
 * We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
 * We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
