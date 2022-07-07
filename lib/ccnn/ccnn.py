@@ -6,7 +6,14 @@ import torch.utils.data
 
 from numpy import linalg as la
 from sklearn.preprocessing import label_binarize
-from .utils import get_pixel_vector, zca_whitening, transform_and_pooling, low_rank_matrix_regression
+from .utils import (
+    get_pixel_vector,
+    zca_whitening,
+    transform_and_pooling,
+    low_rank_matrix_regression,
+    evaluate_classifier,
+    central_crop
+)
 
 # CCNN is defined for two layers, additional methods are required for adding more.
 # Strings indicating the methods:
@@ -253,9 +260,18 @@ class CCNN:
             # TODO: Process as tensor rather than ndarray
             filter_weight = filter_weight.cpu().numpy()
             
-            train_error = 1  # Not calculated
-            test_error = 1  # Not calculated
-            likelihood = ...
+            if A_weight is None:
+                train_error = 1  # Not calculated
+                test_error = 1  # Not calculated
+                likelihood = 0   # Not calculated
+            else:
+                _, train_error, test_error, likelihood = evaluate_classifier(
+                    central_crop(x_reduced[0:self.train_img_cnt], pool_cnt, feature_dim, crop_ratio),
+                    central_crop(x_reduced[self.train_img_cnt:], pool_cnt, feature_dim, crop_ratio),
+                    labels_binarized[0:self.train_img_cnt],
+                    labels_binarized[self.train_img_cnt:],
+                    A_weight
+                )
         
         filter_dim = filter_weight.shape[0]
         
