@@ -90,7 +90,7 @@ We have also followed the exact same settings, with the following additional ass
 On top of these, following datasets were used:
 * MNIST by [LeCun et al. 1998](http://yann.lecun.com/exdb/mnist/)[5] with 10 classes of handwritten digits. The images’ size is 28x28 and in gray scale. There are 60,000 images for training and 1,000 images for testing. Used for obtaining the results of CCNN, LeNet-5 and LeNet-5 (from the paper) in accuracy, average log likelihood and average interval length metrics. It was also used as part of the train & forget approach's forget strategy.
 * Fashion MNIST Dataset containing 10 classes of clothes by [Xiao, Rasul, and Vollgraf 2017](https://arxiv.org/abs/1708.07747)[6]. The images’ size and sizes of training and testing datasets are same as above. Used for obtaining the results of CCNN, LeNet-5 and LeNet-5 (from the paper) in accuracy, average log likelihood and average interval length metrics. It was also used as part of the train & forget approach's train strategy and train & flip approach.
-* CIFAR10 dataset by [Krizhevsky et al. 2009](https://www.cs.toronto.edu/~kriz/cifar.html)[7] with 10 classes of different images. The images’ size is 32x32 and in rgb scale. There are 50000 training images and 10000 test images. Used for evaluating the performance of CCNN, Train & Forget and Train & Flip.
+* CIFAR10 dataset by [Krizhevsky 2009](https://www.cs.toronto.edu/~kriz/cifar.html)[7] with 10 classes of different images. The images’ size is 32x32 and in rgb scale. There are 50000 training images and 10000 test images. Used for evaluating the performance of CCNN, Train & Forget and Train & Flip.
  
 
 
@@ -176,17 +176,19 @@ Our results are ......
 
 @TODO: Provide your references here.
 
-[1] Du, H., Barut E., Jin F. (2021) Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks.
+[1] Du, H., Barut E., Jin F. (2021). Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks.
 
-[2] Zhang, Y., Liang, P., Wainwright, M.J. (2016) Convexified Convolutional Neural Networks.
+[2] Zhang, Y., Liang, P., Wainwright, M.J. (2016). Convexified Convolutional Neural Networks.
 
-[3] Lakshminarayanan, B., Pritzel, A., Blundell, C. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles.
+[3] Lakshminarayanan, B., Pritzel, A., Blundell, C. (2017). Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles.
 
-[4] LeCun, Y., Bottou, L., Bengio, Y., Haffner, P. (1998) Gradient Based Learning Applied To Document Recognition
+[4] LeCun, Y., Bottou, L., Bengio, Y., Haffner, P. (1998). Gradient Based Learning Applied To Document Recognition
 
-[5]
-[6]
-[7]
+[5] LeCun, Y., Cortes, C., Burges, C. J. C. (1998). THE MNIST DATABASE of handwritten digits
+
+[6] Xiao, H., Rasul, K., Vollgraf, R. (2017). Fashion-MNIST: a Novel Image Dataset for Benchmarking Machine Learning Algorithms
+
+[7] Krizhevksy, A., (2009). Learning Multiple Layers of Features From Tiny Images
 
 `main/_init_paths` adapted from bag of tricks...
 
