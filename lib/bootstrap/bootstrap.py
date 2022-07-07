@@ -1,5 +1,6 @@
 import logging as lg
 import numpy as np
+import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 
 from numpy import random
