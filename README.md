@@ -59,7 +59,7 @@ We encountered the following problems understanding and implementing the methods
 * Applying Gaussian noises to the weights of the model were rather difficult for us while implementing the Train & Perturb approach.
 * Train & Forget method was also difficult to implement due to the CIFAR-10 dataset of PyTorch holding its targets as lists rather than numpy arrays, in contrast with the Fashion MNIST dataset.
 
-We thus dealt with or skipped the aforementioned issues through:
+We dealt with or skipped the aforementioned issues through the following assumptions and strategies:
 * KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
 * We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
