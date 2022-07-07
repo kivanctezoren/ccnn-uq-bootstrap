@@ -72,13 +72,16 @@ We dealt with or skipped the aforementioned issues through the following assumpt
 
 ## 3.1. Experimental setup
 
-The authors propose the following set-ups for the experiments for the aforementioned techniques that we are trying to reproduce (excluding the ones that we could not reproduce for stated reasons):
+The authors propose the following setups for the experiments for the aforementioned techniques that we are trying to reproduce (excluding the ones that we could not reproduce for stated reasons):
 * CCNN KIVANÇ BURAYA YAZ ABİ NE KULLANDIYSA
 * For bootstrapping, perform $B=100$ sampling iterations
 * LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
 * For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer and horse from CIFAR10) for another 30 epochs.
 * For train & flip, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with randomly flipped labels for another 30 epochs.
 * For train & perturb, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, adding random Gaussian perturbations (with σ = 0.5 and σ = 0.1 for Fashion MNIST and CIFAR10, respectively) to all of the weights. 
+
+On top of these, following datasets were used:
+* 
 
 
 We have omitted <...> step in input normalization due to an issue...
