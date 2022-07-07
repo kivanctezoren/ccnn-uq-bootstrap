@@ -169,7 +169,8 @@ Our results are ......
 
 # 4. Conclusion
 
-@TODO: Discuss the paper in relation to the results in the paper and your results.
+@TODO KIVANÇ
+
 
 # 5. References
 
