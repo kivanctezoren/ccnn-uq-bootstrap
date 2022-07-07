@@ -124,7 +124,7 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 
 <figcaption align="center">Table 1 - Results of Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
-
+\\ \\ \\
 
 | Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
 | ------------------ | ------------- | ---------------------- | ----------------------- |
