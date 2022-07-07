@@ -4,7 +4,7 @@ import logging as lg
 import torch
 from torchvision import datasets, transforms
 
-from bootstrap import bootstrap
+from bootstrap import bootstrap as bs
 from ccnn import ccnn
 from cnn import cnn
 
@@ -12,6 +12,7 @@ from cnn import cnn
 BATCH_SIZE = 256
 NUM_WORKERS = 1
 DATASET_PATH = "datasets/"
+CNN_LR = 5e-4
 # List of datasets that can be used
 DATASETS_LIST = ["MNIST", "FashionMNIST", "CIFAR10"]
 DATASET = "MNIST"
@@ -92,12 +93,13 @@ if __name__ == "__main__":
         device=torch.device("cpu")  # Temporarily use CPU only. TODO: Change after implementing torch tensors
     )
     
-    # TODO: Apply bootstrap
-    ...
+    bs.ccnn_bootstrap()
 
     lg.info("Begin bootstrap with LeNet...")
     
-    cnn_model = cnn.LeNet(class_cnt)
+    cnn_model = cnn.LeNet(class_cnt).to(device)
+    cnn_optimizer = torch.optim.Adam(cnn_model.parameters(), lr=CNN_LR)
+    cnn_criterion = torch.nn.CrossEntropyLoss()
 
-    # TODO: Apply bootstrap
-    ...
+    bs.cnn_bootstrap(cnn_model, train_dset, test_dl, cnn_criterion, cnn_optimizer, BATCH_SIZE, num_class=class_cnt,
+                     device=device)
