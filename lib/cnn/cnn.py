@@ -13,10 +13,10 @@ class LeNet(nn.Module):
                 nn.Conv2d(in_channels=1, out_channels=32, kernel_size=2, stride=1),
                 nn.Tanh(),
                 nn.AvgPool2d(kernel_size=2),
-                nn.Conv2d(in_channels=6, out_channels=64, kernel_size=2, stride=1),
+                nn.Conv2d(in_channels=32, out_channels=64, kernel_size=2, stride=1),
                 nn.Tanh(),
                 nn.AvgPool2d(kernel_size=2),
-                nn.Conv2d(in_channels=16, out_channels=128, kernel_size=2, stride=1),
+                nn.Conv2d(in_channels=64, out_channels=128, kernel_size=2, stride=1),
                 nn.Tanh()
             )
             
