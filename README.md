@@ -70,7 +70,11 @@ We dealt with or skipped the aforementioned issues through the following assumpt
 
 ## 3.1. Experimental setup
 
-@TODO: Describe the setup of the original paper and whether you changed any settings.
+The authors propose the following set-ups for the experiments for each of the aforementioned models and techniques:
+* CCNN KIVANÇ BURAYA YAZ ABİ NE KULLANDIYSA
+* LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
+* For train & forget, train a pretrained backbone for transfer learning through
+* * asd
 
 We have omitted <...> step in input normalization due to an issue...
 
@@ -120,7 +124,7 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | ------------------ | ------------- | ---------------------- | ----------------------- |
 | CCNN               | 97.4%         | -......                | -......                 |
 | LeNet-5            | 96.29%        | -6.8776                | 0.0011                  |
-| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+| LeNet-5 (Paper)    | --.--%        | -......                | -......                 |
 
 <figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
@@ -130,7 +134,7 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | ------------------ | ------------- | ---------------------- | ----------------------- |
 | CCNN               | 89.8%         | -......                | -......                 |
 | LeNet-5            | 81.75%        | -429.11                | 0.0977                  |
-| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+| LeNet-5 (Paper)    | --.--%        | -......                | -......                 |
 
 <figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 
@@ -138,8 +142,8 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 
 | Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
 | ------------------ | ------------- | ---------------------- | ----------------------- |
-| CCNN               | 89.8%         | -......                | -......                 |
-| Trainf&Forget      | 81.75%        | -429.11                | 0.0977                  |
+| CCNN               | --.--%        | -......                | -......                 |
+| Trainf&Forget      | --.--%        | -......                | -.00000                 |
 | Trainf&Flip        | --.--%        | -......                | -......                 |
 
 <figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
