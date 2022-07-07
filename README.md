@@ -49,9 +49,22 @@ The authors choose the infamous [Deep Ensembles](https://proceedings.neurips.cc/
  
 ## 2.2. Our interpretation 
 
-We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ). We also could not obtain the results for the [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method as it is an expensive method for us to run on Google Colaboratory machines. Furthermore, Appendix for the paper wasn't available so we could not find the proof or the methods that they specifically applied to get their transfer learning approaches running.
+We encountered the following problems understanding and implementing the methods and techniques that the authors utilized:
+* We had some problems with the CCNN implementation. The design for it was done in 2017 and it was implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ).
+* Appendix for the paper wasn't available at the AAAI'21 conference archive, so we could not find the proof or the methods they specifically used for the theoretical basis of their transfer learning approaches.
+* LeNet-5 that they provided was actually not the best in terms of its parameters (such as filters and kernel size) for the architecture.
+* The average interval length was calculated as the average of interval lengths in the entire dataset, without considering interval length per each class.
+* MNIST Blur and Cats&Dogs datasets caused us some problems while working on Google Colaboratory
+* [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method is rather expensive and it is really hard to run it from Google Colaboratory.
+* Applying Gaussian noises to the weights of the model were rather difficult for us while implementing the Train & Perturb approach.
+* Train & Forget method was also difficult to implement due to the CIFAR-10 dataset of PyTorch holding its targets as lists rather than numpy arrays, in contrast with the Fashion MNIST dataset.
 
-<CCNN dataset usage assumptions? batch size, vectorization etc.?>
+We dealt with or skipped the aforementioned issues through the following assumptions and strategies:
+* KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
+* We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
+* We additionally report results for another LeNet-5 architecture that we thought could produce better results.
+* We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
+* We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train & Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
 
 # 3. Experiments and results
 
@@ -102,7 +115,6 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 
 ## 3.3. Results
 
-@TODO: Present your results and compare them to the original paper. Please number your figures & tables as if this is a paper.
 
 ![paper-results](readme_assets/<...>.png "Figure 2")
 <figcaption align="center">Figure 2 - Results of <...> from the paper</figcaption>
