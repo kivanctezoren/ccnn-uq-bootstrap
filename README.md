@@ -54,6 +54,7 @@ We encountered the following problems understanding and implementing the methods
 * Appendix for the paper wasn't available at the AAAI'21 conference archive, so we could not find the proof or the methods they specifically used for the theoretical basis of their transfer learning approaches.
 * LeNet-5 that they provided was actually not the best in terms of its parameters (such as filters and kernel size) for the architecture.
 * The average interval length was calculated as the average of interval lengths in the entire dataset, without considering interval length per each class.
+* Number of samples to be obtained at each bootstrap sampling iteration was not specified.
 * MNIST Blur and Cats&Dogs datasets caused us some problems while working on Google Colaboratory
 * [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3] method is rather expensive and it is really hard to run it from Google Colaboratory.
 * Applying Gaussian noises to the weights of the model were rather difficult for us while implementing the Train & Perturb approach.
@@ -64,13 +65,21 @@ We dealt with or skipped the aforementioned issues through the following assumpt
 * We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
 * We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
+* Number of samples to be obtained at each bootstrap sampling was assumed as 200, since 100 felt a bit short experimentally and more sampling made it rough for us to obtain the results in the plausible time interval.
 * We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train & Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
 
 # 3. Experiments and results
 
 ## 3.1. Experimental setup
 
-@TODO: Describe the setup of the original paper and whether you changed any settings.
+The authors propose the following set-ups for the experiments for the aforementioned techniques that we are trying to reproduce (excluding the ones that we could not reproduce for stated reasons):
+* CCNN KIVANÇ BURAYA YAZ ABİ NE KULLANDIYSA
+* For bootstrapping, perform $B=100$ sampling iterations
+* LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
+* For train & forget, train a pretrained backbone for transfer learning through first training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer and horse from CIFAR10) for another 30 epochs.
+* For train & flip, train a pretrained backbone for transfer learning through first training the LeNet-5 on on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with randomly flipped labels for another 30 epochs.
+* For train & perturb
+
 
 We have omitted <...> step in input normalization due to an issue...
 
@@ -120,9 +129,9 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | ------------------ | ------------- | ---------------------- | ----------------------- |
 | CCNN               | 97.4%         | -......                | -......                 |
 | LeNet-5            | 96.29%        | -6.8776                | 0.0011                  |
-| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+| LeNet-5 (Paper)    | --.--%        | -......                | -......                 |
 
-<figcaption align="center">Table 1 - Results of Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
+<figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
@@ -130,12 +139,19 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | ------------------ | ------------- | ---------------------- | ----------------------- |
 | CCNN               | 89.8%         | -......                | -......                 |
 | LeNet-5            | 81.75%        | -429.11                | 0.0977                  |
-| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+| LeNet-5 (Paper)    | --.--%        | -......                | -......                 |
 
-<figcaption align="center">Table 2 - Results of Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
+<figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
+| Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
+| ------------------ | ------------- | ---------------------- | ----------------------- |
+| CCNN               | --.--%        | -......                | -......                 |
+| Trainf&Forget      | --.--%        | -......                | -.00000                 |
+| Trainf&Flip        | --.--%        | -......                | -......                 |
+
+<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
 <...discussion...>
 
 # 4. Conclusion
