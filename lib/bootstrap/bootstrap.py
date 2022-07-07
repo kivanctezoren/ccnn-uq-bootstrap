@@ -4,6 +4,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 
 from numpy import random
+from ..ccnn import ccnn
 
 
 random_generator = random.default_rng(501)
@@ -162,7 +163,9 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
     repetitions = {}
     for i in range(len(train_data)):
         repetitions[str(i)] = 0
-
+        
+        ccnn_state = None
+        
         # sample B times
         for b in range(B):
             sample_data, repetitions = get_sample_data(train_data, repetitions,
@@ -172,8 +175,19 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
             
             # Create new CCNN, use previous state.
             # It generates a new layer & trains it.
+            model = ccnn.CCNN(
+                train_dl=sample_data,
+                test_dl=valid_dataloader,
+                train_img_cnt=len(sample_data.dataset),
+                test_img_cnt=len(valid_dataloader.dataset),
+                state=ccnn_state,
+                multilayer_method="ZHANG",
+                n_iter=epochs,
+                device=torch.device("cpu")  # Temporarily use CPU only
+            )
             
-            # Save CCNN state.
+            # Save CCNN state for the next bootstrap.
+            ccnn_state = model.state
     
             lg.info(f"Test scores for bootstrap {b + 1}:")
             # Get scores. use ccnn output instead of compute preds test
@@ -184,7 +198,7 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
             # loss = ...
             # acc = ...
             dist = ...  # Array of <???>
-            likelihood = ...
+            likelihood = model.log_likelihood
             # likelihood_dist = ...
             
             # accumulated_loss += loss
