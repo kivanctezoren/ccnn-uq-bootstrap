@@ -7,7 +7,7 @@ import time
 import torch
 from numpy import linalg as la
 
-lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+lg.basicConfig(format='%(levelname)s\t- %(asctime)s\t- %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 

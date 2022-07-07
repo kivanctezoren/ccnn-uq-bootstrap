@@ -19,7 +19,7 @@ DATASET = "MNIST"
 DATASET_TRAIN_CNT = -1
 DATASET_TEST_CNT = 1000
 
-lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+lg.basicConfig(format='%(levelname)s\t- %(asctime)s\t- %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 

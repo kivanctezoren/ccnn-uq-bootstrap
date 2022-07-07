@@ -14,7 +14,7 @@ MULTILAYER_METHODS = ["ZHANG", "TRANSFER_LRN"]
 # "ZHANG": Layer generation method proposed in the original CCNN paper by Zhang et al.
 # "TRANSF_LRN": The transfer learning method proposed by Du et al.
 
-lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+lg.basicConfig(format='%(levelname)s\t- %(asctime)s\t- %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 

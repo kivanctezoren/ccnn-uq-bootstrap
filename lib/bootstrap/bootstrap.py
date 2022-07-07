@@ -7,7 +7,7 @@ from numpy import random
 
 random_generator = random.default_rng(501)
 
-lg.basicConfig(format='%(levelname)s - %(asctime)s - %(message)s',
+lg.basicConfig(format='%(levelname)s\t- %(asctime)s\t- %(message)s',
                datefmt='%m/%d/%Y-%H:%M:%S',
                level=lg.DEBUG)
 
