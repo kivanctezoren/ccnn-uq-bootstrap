@@ -252,11 +252,11 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
     cropped_d1 = int(d1*ratio*ratio)
     
     if prev_A is None:
-        A = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
-        A_sum = np.zeros((9, cropped_d1*d2), dtype=np.float32)  # 9-(d1*d2)
+        A = np.zeros((9, cropped_d1 * d2), dtype=np.float32)  # 9-(d1*d2)
     else:
-        A = ...
-        A_sum = ...
+        A = prev_A
+    
+    A_sum = np.zeros((9, cropped_d1 * d2), dtype=np.float32)  # 9-(d1*d2)
     computation_time = 0
     error_train = 1
     error_test = 1
