@@ -81,7 +81,11 @@ The authors propose the following setups for the experiments for the aforementio
 * For train & perturb, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, adding random Gaussian perturbations (with σ = 0.5 and σ = 0.1 for Fashion MNIST and CIFAR10, respectively) to all of the weights. 
 
 On top of these, following datasets were used:
-* 
+* MNIST (LeCun et al. 1998)[http://yann.lecun.com/exdb/mnist/] with 10 classes of handwritten digits. The images’ size is 28x28 and in gray scale. There are 60,000 images for training and 1,000 images for testing. Used for obtaining the results of CCNN, LeNet-5 and LeNet-5 (from the paper) in accuracy, average log likelihood and average interval length metrics. It was also used as part of the train & forget approach's forget strategy.
+* Fashion MNIST Dataset containing 10 classes of clothes (Xiao, Rasul, and Vollgraf 2017)[https://arxiv.org/abs/1708.07747]. The images’ size and sizes of training and testing datasets are same as above. Used for obtaining the results of CCNN, LeNet-5 and LeNet-5 (from the paper) in accuracy, average log likelihood and average interval length metrics. It was also used as part of the train & forget approach's train strategy and train & flip approach.
+* CIFAR10 dataset (Krizhevsky et al. 2009)[https://www.cs.toronto.edu/~kriz/cifar.html] with 10 classes of different images. The images’ size is 32x32 and in rgb scale. There are 50000 training images and 10000 test images. Used for evaluating the performance of CCNN, Train & Forget and Train & Flip.
+ 
+
 
 
 We have omitted <...> step in input normalization due to an issue...
