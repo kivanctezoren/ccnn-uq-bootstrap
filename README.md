@@ -41,7 +41,7 @@ The original method that the authors propose is summarized neatly on the followi
 ![bootstrap-algorithm](readme_assets/bootstrap-algorithm.png "Figure 1")
 <figcaption align="center">Figure 1 - CCNN Bootstrap Algorithm</figcaption>
 
-Verbally, the method work as:
+Verbally, the method works as:
 
 * First, train the network in order to have the weights for the first bootstrap sampling's warm-start
 * Secondly, start the bootstrap sampling by initializing the model with previously saved parameters
@@ -183,7 +183,7 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 |------------------|----------|------------------------|-------------------------|
 | CCNN             | 97.4%    | -......                | -......                 |
 | LeNet-5 (Custom) | 96.29%   | -6.1671                | 0.0011                  |
-| LeNet-5 (Paper)  | --.--%   | -6.6588                | 0.0010                  |
+| LeNet-5 (Paper)  | 94.60%   | -6.6588                | 0.0010                  |
 
 <figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average
 Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
