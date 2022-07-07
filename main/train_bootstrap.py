@@ -97,7 +97,7 @@ if __name__ == "__main__":
 
     lg.info("Begin bootstrap with LeNet (described in paper)...")
     
-    cnn_model = cnn.LeNet(class_cnt, paper_params=True).to(device)
+    cnn_model = cnn.LeNet(n_classes=class_cnt, paper_params=True).to(device)
     cnn_optimizer = torch.optim.Adam(cnn_model.parameters(), lr=CNN_LR)
     cnn_criterion = torch.nn.CrossEntropyLoss()
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
     lg.info("Begin bootstrap with LeNet (better parameters)...")
     
-    cnn_model = cnn.LeNet(class_cnt, paper_params=False).to(device)
+    cnn_model = cnn.LeNet(n_classes=class_cnt, paper_params=False).to(device)
     cnn_optimizer = torch.optim.Adam(cnn_model.parameters(), lr=CNN_LR)
     # cnn_criterion: Unchanged
     
