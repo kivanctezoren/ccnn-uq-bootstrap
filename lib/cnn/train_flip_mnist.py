@@ -16,6 +16,9 @@ from torch.utils.data import (
 
 from cnn import LeNet
 
+learning_rate = 5e-4
+batch_size = 32
+
 
 transforms = torchTransforms.Compose([torchTransforms.Resize((32, 32)),
                                  torchTransforms.ToTensor()])
@@ -116,9 +119,6 @@ def test_train_flip(model, test_loader, criterion, device=None):
 
 # flip model trained on Fashion MNIST
 flip_model_mnist = LeNet(10).to(device)
-
-learning_rate = 5e-4
-batch_size = 32
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = flip_model_mnist
