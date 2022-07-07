@@ -78,6 +78,7 @@ The authors propose the following setups for the experiments for the aforementio
 * LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
 * For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer and horse from CIFAR10) for another 30 epochs.
 * For train & flip, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with randomly flipped labels for another 30 epochs.
+* Average interval length was obtained for 95% confidence during all experiments.
 
 
 We have also followed the exact same settings, with the following additional assumptions and tools:
