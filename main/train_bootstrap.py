@@ -112,3 +112,5 @@ if __name__ == "__main__":
     
     bs.cnn_bootstrap(cnn_model, train_dset, test_dl, cnn_criterion, cnn_optimizer, BATCH_SIZE, num_class=class_cnt,
                      device=device)
+
+    lg.info("Finished the experiments.")
