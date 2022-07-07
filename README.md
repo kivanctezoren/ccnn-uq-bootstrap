@@ -176,10 +176,10 @@ Our results are ......
 
 @TODO: Provide your references here.
 
-[1] Du, H., Barut E., Jin F. (2021) Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks *Vol. 35 No. 13: AAAI-21 Technical Tracks 13 
-[2]
-[3]
-[4]
+[1] Du, H., Barut E., Jin F. (2021) Uncertainty Quantification in CNN Through the Bootstrap of Convex Neural Networks.
+[2] Zhang, Y., Liang, P., Wainwright, M.J. (2016) Convexified Convolutional Neural Networks.
+[3] Lakshminarayanan, B., Pritzel, A., Blundell, C. (2017) Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles.
+[4] LeCun, Y., Bottou, L., Bengio, Y., Haffner, P. (1998) Gradient Based Learning Applied To Document Recognition
 [5]
 [6]
 [7]
