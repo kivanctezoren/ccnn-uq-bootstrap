@@ -66,8 +66,6 @@ We thus dealt with or skipped the aforementioned issues through:
 * We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
 * We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train & Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
 
-<CCNN dataset usage assumptions? batch size, vectorization etc.?>
-
 # 3. Experiments and results
 
 ## 3.1. Experimental setup
