@@ -79,10 +79,12 @@ We encountered the following problems understanding and implementing the methods
 utilized:
 * @TODO KIVANÇ We had some problems with the CCNN implementation. The design for it was done in 2017, and it was
 implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ).
+* ... issue with frobenious norm - unstable results, creates NaN, div by 0
 * Appendix for the paper wasn't available at the AAAI'21 conference archive, so we could not find the proof or the
 methods they specifically used for the theoretical basis of their transfer learning approaches.
 * The LeNet-5 model used in the paper was actually not the best in terms of its parameters (such as filters and kernel
 size) for the architecture.
+  * Moreover, the details for the (linear) fully connected layers of the architecture were not specified.
 * The average interval length was calculated as the average of interval lengths in the entire dataset, without
 considering interval length per each class.
 * Number of samples to be obtained at each bootstrap sampling iteration was not specified.
@@ -96,11 +98,19 @@ lists rather than numpy arrays, in contrast with the Fashion MNIST dataset.
 
 We dealt with or skipped the aforementioned issues through the following assumptions and strategies:
 * @TODO KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
-* We decided to trust the authors while considering the theoretical background and validity of their transfer learning approaches.
+* ... skip frobenius norm calculation step in normalization
+* We decided to trust the authors while considering the theoretical background and validity of their transfer learning
+approaches.
+* Since it was not specified, we have assumed the dimension of the middle FC layer as 800.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
-* We took the average interval length calculation strategy just as the authors proposed, we do not calculate any classwise interval length whatsoever.
-* Number of samples to be obtained at each bootstrap sampling was assumed as 200, since 100 felt a bit short of experimental performance expectations and more sampling made it rough for us to obtain the results in the plausible time interval.
-* We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for [Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train & Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
+* We took the average interval length calculation strategy just as the authors proposed, we do not calculate any
+classwise interval length whatsoever.
+* Number of samples to be obtained at each bootstrap sampling was assumed as 200, since 100 felt a bit short of
+experimental performance expectations and more sampling made it rough for us to obtain the results in the plausible
+time interval.
+* We could not reproduce the results for the MNIST Blur and Cats&Dogs dataset, we also do not report the results for
+[Deep Ensembles](https://proceedings.neurips.cc/paper/2017/file/9ef2ed4b7fd2c810847ffa5fa85bce38-Paper.pdf)[3], Train &
+Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained on CIFAR-10).
 
 # 3. Experiments and results
 
@@ -169,23 +179,25 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 ## 3.3. Results
 
 
-| Model \ Metric  | Accuracy | Average Log Likelihood | Average Interval Length |
-|-----------------|----------|------------------------|-------------------------|
-| CCNN            | 97.4%    | -......                | -......                 |
-| LeNet-5         | 96.29%   | -6.8776                | 0.0011                  |
-| LeNet-5 (Paper) | --.--%   | -......                | -......                 |
+| Model \ Metric   | Accuracy | Average Log Likelihood | Average Interval Length |
+|------------------|----------|------------------------|-------------------------|
+| CCNN             | 97.4%    | -......                | -......                 |
+| LeNet-5 (Custom) | 96.29%   | -6.1671                | 0.0011                  |
+| LeNet-5 (Paper)  | --.--%   | -6.6588                | 0.0010                  |
 
-<figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
+<figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average
+Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
-| Model \ Metric  | Accuracy | Average Log Likelihood | Average Interval Length |
-|-----------------|----------|------------------------|-------------------------|
-| CCNN            | 89.8%    | -......                | -......                 |
-| LeNet-5         | 81.75%   | -429.11                | 0.0977                  |
-| LeNet-5 (Paper) | --.--%   | -......                | -......                 |
+| Model \ Metric   | Accuracy | Average Log Likelihood | Average Interval Length |
+|------------------|----------|------------------------|-------------------------|
+| CCNN             | 89.8%    | -......                | -......                 |
+| LeNet-5 (Custom) | 81.75%   | -356.36                | 0.0977                  |
+| LeNet-5 (Paper)  | 81.4%    | -437.08                | 0.0857                  |
 
-<figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
+<figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log
+Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
@@ -195,7 +207,8 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | Trainf&Forget  | --.--%   | -......                | -.00000                 |
 | Trainf&Flip    | --.--%   | -......                | -......                 |
 
-<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
+<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average
+Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
 
 @TODO KIVANÇ RESULT DISCUSSION
 Our results are ......
