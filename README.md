@@ -142,7 +142,7 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 | Trainf&Forget      | 81.75%        | -429.11                | 0.0977                  |
 | Trainf&Flip        | --.--%        | -......                | -......                 |
 
-<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
+<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
 <...discussion...>
 
 # 4. Conclusion
