@@ -116,8 +116,23 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 ## 3.3. Results
 
 
-![paper-results](readme_assets/<...>.png "Figure 2")
-<figcaption align="center">Figure 2 - Results of <...> from the paper</figcaption>
+| Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
+| ------------------ | ------------- | ---------------------- | ----------------------- |
+| CCNN               | 97.4%         | -......                | -......                 |
+| LeNet-5            | 96.29%        | -6.8776                | 0.0011                  |
+| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+
+<figcaption align="center">Table 1 - Results of Accuracy, Average Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
+
+\\ \\ \\
+
+| Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
+| ------------------ | ------------- | ---------------------- | ----------------------- |
+| CCNN               | 89.8%         | -......                | -......                 |
+| LeNet-5            | 81.75%        | -429.11                | 0.0977                  |
+| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+
+<figcaption align="center">Table 2 - Results of Accuracy, Average Log Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 
 <...discussion...>
 
