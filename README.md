@@ -116,7 +116,12 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 ## 3.3. Results
 
 
-![paper-results](readme_assets/<...>.png "Figure 2")
+| Model \ Metric     | Accuracy      | Average Log Likelihood | Average Interval Length |
+| ------------------ | ------------- | ---------------------- | ----------------------- |
+| CCNN               | 97.4%         | -......                | -......                 |
+| LeNet-5            | 96.29%        | -6.8776                | 0.0011                  |
+| LeNet-5 (Their)    | --.--%        | -......                | -......                 |
+
 <figcaption align="center">Figure 2 - Results of <...> from the paper</figcaption>
 
 <...discussion...>
