@@ -119,8 +119,14 @@ Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained
 
 The authors propose the following setups for the experiments for the aforementioned techniques that we are trying to
 reproduce (excluding the ones that we could not reproduce for stated reasons):
-* CCNN KIVANÇ BURAYA YAZ ABİ NE KULLANDIYSA
-* For bootstrapping, perform $B=100$ sampling iterations
+* For initialization of a CCNN layer,
+  * 200 as the Nyström dimension,
+  * 2 as the pooling size and the pooling stride,
+  * 2.0 as gamma,
+  * 100 as the regularization parameter,
+  * 5000 as the iteration count,
+  * Stochatic gradient descent as the optimizer.
+* For bootstrapping, perform $B=100$ sampling iterations.
 * LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with
 a kernel size of (2,2).
 * For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST

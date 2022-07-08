@@ -95,7 +95,7 @@ class CCNN:
                        regularization_param: int = 100.,
                        learning_rate: float = 0.2,
                        crop_ratio: float = 1.,
-                       n_iter: int = 2500,
+                       n_iter: int = 5000,
                        chunk_size: int = 5000,
                        filter_weight=None,
                        A_weight=None
