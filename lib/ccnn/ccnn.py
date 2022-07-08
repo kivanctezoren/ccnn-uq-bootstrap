@@ -233,9 +233,6 @@ class CCNN:
                     learning_rate=learning_rate,
                     ratio=crop_ratio
                 )
-
-                # TODO: Process as tensor rather than ndarray
-                self.state.A_weights.append(torch.from_numpy(A))
             else:
                 # Train continuing from previous weights
                 filter_weight, train_error, test_error, likelihood, probs, A = low_rank_matrix_regression(
@@ -260,6 +257,7 @@ class CCNN:
             # Use given filter_weight.
             # TODO: Process as tensor rather than ndarray
             filter_weight = filter_weight.cpu().numpy()
+            A = None
             
             if A_weight is None:
                 # Scores are not calculated
@@ -296,6 +294,9 @@ class CCNN:
         self.layer_count += 1
         # TODO: Process as tensor rather than ndarray
         self.state.filter_weights.append(torch.from_numpy(filter_weight))
+        # TODO: Process as tensor rather than ndarray
+        self.state.A_weights.append(torch.from_numpy(A))
+        self.state.A_weights.append(torch.from_numpy(A_weight))
         self.last_layer_output = torch.from_numpy(output)
         
         lg.info("Done layer generation #" + str(self.layer_count) + ".")
