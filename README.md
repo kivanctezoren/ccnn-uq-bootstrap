@@ -154,7 +154,8 @@ On top of these, following datasets were used:
 
 The implementation is split into directories:
 * `bootstrap`: Contains functions for bootstrapping operations.
-* `CCN`: Contains the implementation for the LeNet model used in the paper.
+* `CCN`: Contains the implementation for the LeNet model used in the paper, as well as the transfer learning
+methods to be used with CCNN.
 * `CCNN`: Contains the CCNN implementation and functions required by the CCNN. Largely adapted from
 [Zhang et al.](https://github.com/zhangyuc/CCNN/blob/master/src/mnist/CCNN.py)[2]
 
@@ -217,8 +218,8 @@ Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 | Model \ Metric | Accuracy | Average Log Likelihood | Average Interval Length |
 |----------------|----------|------------------------|-------------------------|
 | CCNN           | --.--%   | -......                | -......                 |
-| Trainf&Forget  | --.--%   | -......                | -.00000                 |
-| Trainf&Flip    | --.--%   | -......                | -......                 |
+| Train & Forget | --.--%   | -......                | -.00000                 |
+| Train & Flip   | --.--%   | -......                | -......                 |
 
 <figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average
 Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
