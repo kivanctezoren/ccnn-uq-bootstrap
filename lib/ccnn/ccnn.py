@@ -38,7 +38,7 @@ class CCNN:
                  test_dl: torch.utils.data.DataLoader,
                  train_img_cnt: int,
                  test_img_cnt: int,
-                 state: CCNNState = None,
+                 from_state: CCNNState = None,
                  multilayer_method: str = "ZHANG",
                  n_iter: int = 5000,
                  device: torch.device = torch.device("cpu")
@@ -54,7 +54,7 @@ class CCNN:
 
         self.img_cnt = self.train_img_cnt + self.test_img_cnt
 
-        self.state = state
+        self.state = CCNNState(filter_weights=[], A_weights=[])
         self.layer_count = 0
         self.last_layer_output = None
         self.train_accuracy = 0
@@ -63,9 +63,7 @@ class CCNN:
         self.probs = None
         self.device = device
 
-        if self.state is None:
-            self.state = CCNNState(filter_weights=[], A_weights=[])
-            
+        if from_state is None:
             if multilayer_method == "ZHANG":
                 # Generate first layer
                 self.generate_layer(n_iter=n_iter)  # Increments layer_count too
@@ -77,13 +75,7 @@ class CCNN:
                 raise ValueError("Unrecognized CCNN layer addition method in first layer generation: "
                                  + multilayer_method)
         else:
-            if len(self.state.filter_weights) != len(self.state.A_weights):
-                raise Exception
-            
-            fw_list = self.state.filter_weights
-            aw_list = self.state.A_weights
-            
-            for fw, aw in zip(fw_list, aw_list):
+            for fw, aw in zip(from_state.filter_weights, from_state.A_weights):
                 # TODO: Save filters with their generation param.s in CCNNState object. Use these params instead of the
                 #   default ones below.
                 self.generate_layer(filter_weight=fw, A_weight=aw)
