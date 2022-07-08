@@ -181,7 +181,7 @@ def ccnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, bat
             test_dl=valid_dataloader,
             train_img_cnt=len(sample_data.dataset),
             test_img_cnt=len(valid_dataloader.dataset),
-            state=ccnn_state,
+            from_state=ccnn_state,
             multilayer_method="ZHANG",
             n_iter=epochs,
             # device=device
