@@ -192,45 +192,44 @@ Simply run `main/train_bootstrap.py` with the global `DATASET` variable set to t
 
 ## 3.3. Results
 
+The results for our recreation of the bootstrapping experiment are shown below:
 
-| Model \ Metric   | Accuracy | Average Log Likelihood | Average Interval Length |
-|------------------|----------|------------------------|-------------------------|
-| CCNN             | 97.4%    | -......                | -......                 |
-| LeNet-5 (Custom) | 96.29%   | -6.1671                | 0.0011                  |
-| LeNet-5 (Paper)  | 94.60%   | -6.6588                | 0.0010                  |
+| Model \ Metric   | Accuracy  | Average Log Likelihood | Average Interval Length |
+|------------------|-----------|------------------------|-------------------------|
+| CCNN             | **97.4%** | **-3.7481**            | **0.0008**              |
+| LeNet-5 (Custom) | 96.29%    | -6.1671                | 0.0011                  |
+| LeNet-5 (Paper)  | 94.60%    | -6.6588                | 0.0010                  |
 
 <figcaption align="center">Table 1 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average
 Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
-| Model \ Metric   | Accuracy | Average Log Likelihood | Average Interval Length |
-|------------------|----------|------------------------|-------------------------|
-| CCNN             | 89.8%    | -......                | -......                 |
-| LeNet-5 (Custom) | 81.75%   | -356.36                | 0.0977                  |
-| LeNet-5 (Paper)  | 81.4%    | -437.08                | 0.0857                  |
+| Model \ Metric   | Accuracy  | Average Log Likelihood | Average Interval Length |
+|------------------|-----------|------------------------|-------------------------|
+| CCNN             | **89.8%** | -......                | -......                 |
+| LeNet-5 (Custom) | 81.75%    | -356.36                | 0.0977                  |
+| LeNet-5 (Paper)  | 81.4%     | -437.08                | 0.0857                  |
 
 <figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log
 Likelihood and Average Interval Length for Fashion MNIST Dataset</figcaption>
 
 ------------------------------------------------------------------------------------------
 
-| Model \ Metric | Accuracy | Average Log Likelihood | Average Interval Length |
-|----------------|----------|------------------------|-------------------------|
-| CCNN           | --.--%   | -......                | -......                 |
-| Train & Forget | --.--%   | -......                | -.00000                 |
-| Train & Flip   | --.--%   | -......                | -......                 |
+Taking Table 1 presented in the paper into consideration, it can be said that we have managed to obtain similar results.
+It can be seen that when all three models are evaluated on a common baseline, CCNN performs generally better both in
+terms of accuracy and uncertainty quantification. Moreover, our LeNet model performs better on average log likelihood
+calculation and on accuracy. The LeNet presented in the paper performs better on average interval length, however.
 
-<figcaption align="center">Table 3 - Results of CCNN, Train&Forget approach and Train&Flip approach in Accuracy, Average
-Log Likelihood and Average Interval Length for CIFAR-10 Dataset</figcaption>
-
-@TODO KIVANÇ RESULT DISCUSSION
-Our results are ......
+Unfortunately, the transfer learning experiments involving CIFAR10 could not be replicated using a CCNN, due to an
+issue concerning the different data formats and frameworks of the models.
+Still, the weights to be used in the experiment were successfully obtained and can be foun under `lib/cnn/` directory. 
 
 # 4. Conclusion
 
-@TODO KIVANÇ
-
+It can be concluded from the results that a convexified neural network can provide not only a cheaper training method,
+but also decent accuracy and uncertainty quantification in certain tasks. As can be seen from our experiments, with
+relatively small datasets, a trained CCNN yields results comparable to regular non-convex CNNs of similar complexity.
 
 # 5. References
 
