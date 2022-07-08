@@ -79,11 +79,14 @@ class CCNN:
         else:
             if len(self.state.filter_weights) != len(self.state.A_weights):
                 raise Exception
-                
-            for i, fw in enumerate(self.state.filter_weights):
+            
+            fw_list = self.state.filter_weights
+            aw_list = self.state.A_weights
+            
+            for fw, aw in zip(fw_list, aw_list):
                 # TODO: Save filters with their generation param.s in CCNNState object. Use these params instead of the
                 #   default ones below.
-                self.generate_layer(filter_weight=fw, A_weight=self.state.A_weights[i])
+                self.generate_layer(filter_weight=fw, A_weight=aw)
 
     # TODO: Save reduced input & learned features
     def generate_layer(self,
