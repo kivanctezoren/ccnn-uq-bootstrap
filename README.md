@@ -207,8 +207,8 @@ Log Likelihood and Average Interval Length for MNIST Dataset</figcaption>
 
 | Model \ Metric   | Accuracy  | Average Log Likelihood | Average Interval Length |
 |------------------|-----------|------------------------|-------------------------|
-| CCNN             | **89.8%** | -......                | -......                 |
-| LeNet-5 (Custom) | 81.75%    | -356.36                | 0.0977                  |
+| CCNN             | **89.8%** | -398.51                | **0.0707**              |
+| LeNet-5 (Custom) | 81.75%    | **-356.36**            | 0.0977                  |
 | LeNet-5 (Paper)  | 81.4%     | -437.08                | 0.0857                  |
 
 <figcaption align="center">Table 2 - Results of CCNN, LeNet-5 and LeNet-5 (from the paper) in Accuracy, Average Log
@@ -223,7 +223,7 @@ calculation and on accuracy. The LeNet presented in the paper performs better on
 
 Unfortunately, the transfer learning experiments involving CIFAR10 could not be replicated using a CCNN, due to an
 issue concerning the different data formats and frameworks of the models.
-Still, the weights to be used in the experiment were successfully obtained and can be foun under `lib/cnn/` directory. 
+Still, the weights to be used in the experiment were successfully obtained and can be found under `lib/cnn/` directory. 
 
 # 4. Conclusion
 
