@@ -77,9 +77,10 @@ for the probability output of the classifier for the given input and $y_i$ stand
 
 We encountered the following problems understanding and implementing the methods and techniques that the authors
 utilized:
-* @TODO KIVANÇ We had some problems with the CCNN implementation. The design for it was done in 2017, and it was
-implemented without any framework support. (KIVANÇ BURAYA HER NE SORUN YAŞADIYSAN YAZ).
-* ... issue with frobenious norm - unstable results, creates NaN, div by 0
+* We had some problems with the implementation of the original paper on CCNNs. The design can be considered outdates as 
+it did not feature any deep learning framework support, such as TensorFlow or PyTorch. Due to heavy use of advanced
+linear algebra topics, the implementation used NumPy to deal with tensors instead, which sometimes required effort to
+understand and adapt to our project.
 * Appendix for the paper wasn't available at the AAAI'21 conference archive, so we could not find the proof or the
 methods they specifically used for the theoretical basis of their transfer learning approaches.
 * The LeNet-5 model used in the paper was actually not the best in terms of its parameters (such as filters and kernel
@@ -97,11 +98,11 @@ Perturb approach.
 lists rather than numpy arrays, in contrast with the Fashion MNIST dataset.
 
 We dealt with or skipped the aforementioned issues through the following assumptions and strategies:
-* @TODO KIVANÇ BURAYA NE YAPTIYSAN YAZ CCNN İÇİN
-* ... skip frobenius norm calculation step in normalization
 * We decided to trust the authors while considering the theoretical background and validity of their transfer learning
 approaches.
-* Since it was not specified, we have assumed the dimension of the middle FC layer as 800.
+* During the normalization stage of CCNN layer generation, the Frobenius norm of the input matrix sometimes returned
+`inf` values. To ensure numerical stability, we have skipped this normalization operation.
+* Since it was not specified, we have assumed the dimension of the middle FC layer of the LeNet model as 800.
 * We additionally report results for another LeNet-5 architecture that we thought could produce better results.
 * We took the average interval length calculation strategy just as the authors proposed, we do not calculate any
 classwise interval length whatsoever.
@@ -116,12 +117,18 @@ Perturb and Train & Forget on Fashion MNIST (which was supposed to be pretrained
 
 ## 3.1. Experimental setup
 
-The authors propose the following setups for the experiments for the aforementioned techniques that we are trying to reproduce (excluding the ones that we could not reproduce for stated reasons):
+The authors propose the following setups for the experiments for the aforementioned techniques that we are trying to
+reproduce (excluding the ones that we could not reproduce for stated reasons):
 * CCNN KIVANÇ BURAYA YAZ ABİ NE KULLANDIYSA
 * For bootstrapping, perform $B=100$ sampling iterations
-* LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with a kernel size of (2,2).
-* For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer and horse from CIFAR10) for another 30 epochs.
-* For train & flip, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with randomly flipped labels for another 30 epochs.
+* LeNet-5 with 3 convolution and 2 fully connected layers, where the numbers of convolution filters are (32,64,128) with
+a kernel size of (2,2).
+* For train & forget, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST
+data (cats and dogs from CIFAR10) for 30 epochs. Then, training it with the same weights on Original MNIST data (deer
+and horse from CIFAR10) for another 30 epochs.
+* For train & flip, train a pretrained backbone for transfer learning through training the LeNet-5 on Fashion MNIST
+data (cats and dogs from CIFAR10) for 30 epochs. Then, trainining it with the same weights on the same datasets with
+randomly flipped labels for another 30 epochs.
 * Average interval length was obtained for 95% confidence during all experiments.
 
 
