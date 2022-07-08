@@ -105,7 +105,7 @@ def cnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, crit
     likelihood_sum = 0.0
     
     repeats = 0
-    repetitions = {}
+    repetitions = dict()
     for i in range(len(train_data)):
         repetitions[str(i)] = 0
         
@@ -161,68 +161,66 @@ def ccnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, bat
     likelihood_sum = 0.0
     
     repeats = 0
-    repetitions = {}
+    repetitions = dict()
     for i in range(len(train_data)):
         repetitions[str(i)] = 0
         
-        ccnn_state = model.state
+    ccnn_state = model.state
+    
+    # sample B times
+    for b in range(B):
+        sample_data, repetitions = get_sample_data(train_data, repetitions,
+                                                   X, batch_size)
+
+        lg.info(f"Begin bootstrap {b + 1}.")
         
-        # sample B times
-        for b in range(B):
-            sample_data, repetitions = get_sample_data(train_data, repetitions,
-                                                       X, batch_size)
-    
-            lg.info(f"Begin bootstrap {b + 1}.")
-            
-            # Create new CCNN, use previous state.
-            # It generates a new layer & trains it.
-            model = ccnn.CCNN(
-                train_dl=sample_data,
-                test_dl=valid_dataloader,
-                train_img_cnt=len(sample_data.dataset),
-                test_img_cnt=len(valid_dataloader.dataset),
-                state=ccnn_state,
-                multilayer_method="ZHANG",
-                n_iter=epochs,
-                # device=device
-                device=torch.device("cpu")  # Temporarily use CPU only
-            )
-            
-            # Save CCNN state for the next bootstrap.
-            ccnn_state = model.state
-    
-            #lg.info(f"Test scores for bootstrap {b + 1}:")
-            
-            # loss = ...
-            # acc = ...
-            
-            lg.debug(f"Got CCNN probs with shape: {model.probs.shape}")
-            
-            # FIXME: probs is used as a ndarray. When Torch tensor conversion is done, this will create problems.
-            dist = np.append(dist, model.probs)  # Array of softmax for each class
-            likelihood = model.log_likelihood
-            # likelihood_dist = ...
-            
-            # accumulated_loss += loss
-            likelihood_sum += likelihood
+        # Create new CCNN, use previous state.
+        # It generates a new layer & trains it.
+        model = ccnn.CCNN(
+            train_dl=sample_data,
+            test_dl=valid_dataloader,
+            train_img_cnt=len(sample_data.dataset),
+            test_img_cnt=len(valid_dataloader.dataset),
+            state=ccnn_state,
+            multilayer_method="ZHANG",
+            n_iter=epochs,
+            # device=device
+            device=torch.device("cpu")  # Temporarily use CPU only
+        )
+        
+        # Save CCNN state for the next bootstrap.
+        ccnn_state = model.state
 
-        lower = np.percentile(dist, alpha)
-        upper = np.percentile(dist, alpha_)
-        std_err_dist = np.std(dist) / np.sqrt(len(dist))
-        # std_err_like_dist = np.std(likelihood_dist) / np.sqrt(len(likelihood_dist))
-        lg.info(f"(Lower bound: {lower}, Upper bound: {upper})")
-        lg.info(f"Average interval length is: {(upper - lower) / (B * num_class)}")
+        #lg.info(f"Test scores for bootstrap {b + 1}:")
+        
+        # loss = ...
+        # acc = ...
+        
+        lg.debug(f"Got CCNN probs with shape: {model.probs.shape}")
+        
+        # FIXME: probs is used as a ndarray. When Torch tensor conversion is done, this will create problems.
+        dist = np.append(dist, model.probs)  # Array of softmax for each class
+        likelihood = model.log_likelihood
+        # likelihood_dist = ...
+        
+        # accumulated_loss += loss
+        likelihood_sum += likelihood
 
-        # Torch implementation, gives different results from the paper
-        # lg.info(f"Average log likelihood is: {accumulated_loss / B}")
-        # Numpy implementation, gives results similar to those in the paper
-        lg.info(f"Average log likelihood is: {likelihood_sum / B}")
+    lower = np.percentile(dist, alpha)
+    upper = np.percentile(dist, alpha_)
+    std_err_dist = np.std(dist) / np.sqrt(len(dist))
+    # std_err_like_dist = np.std(likelihood_dist) / np.sqrt(len(likelihood_dist))
+    lg.info(f"(Lower bound: {lower}, Upper bound: {upper})")
+    lg.info(f"Average interval length is: {(upper - lower) / (B * num_class)}")
 
-        lg.info(f"Standard error for average interval length: {std_err_dist}")
-        # lg.info(f"Standard error for average likelihood: {std_err_like_dist}")
-        for _, v in repetitions.items():
-            if v > 1:
-                repeats += 1
-        lg.info(f"{repeats} inputs seen more than once")
+    # Torch implementation, gives different results from the paper
+    # lg.info(f"Average log likelihood is: {accumulated_loss / B}")
+    # Numpy implementation, gives results similar to those in the paper
+    lg.info(f"Average log likelihood is: {likelihood_sum / B}")
 
-    return ...
+    lg.info(f"Standard error for average interval length: {std_err_dist}")
+    # lg.info(f"Standard error for average likelihood: {std_err_like_dist}")
+    for _, v in repetitions.items():
+        if v > 1:
+            repeats += 1
+    lg.info(f"{repeats} inputs seen more than once")
