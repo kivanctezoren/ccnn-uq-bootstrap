@@ -224,8 +224,9 @@ def evaluate_classifier(x_train, x_test, y_train, y_test, A):
     n_test = x_test.shape[0]
     eXAY = np.exp(np.sum((np.dot(x_train, A.T)) * y_train[:, 0:9], axis=1))  # batch_size-9
     eXA_sum = np.sum(np.exp(np.dot(x_train, A.T)), axis=1) + 1
-    loss = - np.average(np.log(eXAY/eXA_sum))
-
+    probs = eXAY / eXA_sum
+    loss = - np.average(np.log(probs))
+    
     predict_train = np.concatenate((np.dot(x_train, A.T), np.zeros((n_train, 1), dtype=np.float32)), axis=1)
     predict_test = np.concatenate((np.dot(x_test, A.T), np.zeros((n_test, 1), dtype=np.float32)), axis=1)
 
@@ -240,7 +241,7 @@ def evaluate_classifier(x_train, x_test, y_train, y_test, A):
     
     likelihood_est = -np.sum(label_test * np.log(top_pred_test + 1e-9)) / n_test
 
-    return loss, error_train, error_test, likelihood_est
+    return loss, error_train, error_test, likelihood_est, probs
 
 
 def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2, reg, n_iter, learning_rate, ratio):
@@ -290,7 +291,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
         if (t+1) % 250 == 0:
             dim = np.sum(s[0:25]) / np.sum(s)
             A_avg = A_sum / 250
-            loss, error_train, error_test, _ = evaluate_classifier(
+            loss, error_train, error_test, _, _ = evaluate_classifier(
                 central_crop(x_train, d1, d2, ratio),
                 central_crop(x_test, d1, d2, ratio),
                 y_train,
@@ -306,7 +307,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
     
-    _, error_train, error_test, likelihood_est = evaluate_classifier(
+    _, error_train, error_test, likelihood_est, probs = evaluate_classifier(
         central_crop(x_train, d1, d2, ratio),
         central_crop(x_test, d1, d2, ratio),
         y_train,
@@ -315,4 +316,4 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
     )
     
     dim = min(np.sum((s > 0).astype(int)), 25)
-    return V[0:dim], error_train, error_test, likelihood_est, A_avg
+    return V[0:dim], error_train, error_test, likelihood_est, probs, A_avg

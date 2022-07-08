@@ -189,15 +189,15 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
             # Save CCNN state for the next bootstrap.
             ccnn_state = model.state
     
-            lg.info(f"Test scores for bootstrap {b + 1}:")
-            # Get scores. use ccnn output instead of compute preds test
-            #_, loss, acc, dist, likelihood, likelihood_dist = compute_preds_test(model, valid_dataloader, criterion,
-            #                                                                     dist,
-            #                                                                     device)
+            #lg.info(f"Test scores for bootstrap {b + 1}:")
             
             # loss = ...
             # acc = ...
-            dist = ...  # Array of <???>
+            
+            lg.debug(f"Got CCNN probs with shape: {model.probs.shape}")
+            
+            # FIXME: probs is used as a ndarray. When Torch tensor conversion is done, this will create problems.
+            dist = np.append(dist, model.probs)  # Array of softmax for each class
             likelihood = model.log_likelihood
             # likelihood_dist = ...
             

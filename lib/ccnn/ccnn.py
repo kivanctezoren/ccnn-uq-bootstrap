@@ -60,6 +60,7 @@ class CCNN:
         self.train_accuracy = 0
         self.test_accuracy = 0
         self.log_likelihood = 0
+        self.probs = None
         self.device = device
 
         if self.state is None:
@@ -217,7 +218,7 @@ class CCNN:
         if filter_weight is None:
             if A_weight is None:
                 # Train from scratch
-                filter_weight, train_error, test_error, likelihood, A = low_rank_matrix_regression(
+                filter_weight, train_error, test_error, likelihood, probs, A = low_rank_matrix_regression(
                     # Split and pass concatenated sets
                     x_train=x_reduced[0:self.train_img_cnt],
                     y_train=labels_binarized[0:self.train_img_cnt],
@@ -237,7 +238,7 @@ class CCNN:
                 self.state.A_weights.append(torch.from_numpy(A))
             else:
                 # Train continuing from previous weights
-                filter_weight, train_error, test_error, likelihood, A = low_rank_matrix_regression(
+                filter_weight, train_error, test_error, likelihood, probs, A = low_rank_matrix_regression(
                     # Split and pass concatenated sets
                     x_train=x_reduced[0:self.train_img_cnt],
                     y_train=labels_binarized[0:self.train_img_cnt],
@@ -261,11 +262,13 @@ class CCNN:
             filter_weight = filter_weight.cpu().numpy()
             
             if A_weight is None:
-                train_error = 1  # Not calculated
-                test_error = 1  # Not calculated
-                likelihood = 0   # Not calculated
+                # Scores are not calculated
+                train_error = 1
+                test_error = 1
+                likelihood = 0
+                probs = None
             else:
-                _, train_error, test_error, likelihood = evaluate_classifier(
+                _, train_error, test_error, likelihood, probs = evaluate_classifier(
                     central_crop(x_reduced[0:self.train_img_cnt], pool_cnt, feature_dim, crop_ratio),
                     central_crop(x_reduced[self.train_img_cnt:], pool_cnt, feature_dim, crop_ratio),
                     labels_binarized[0:self.train_img_cnt],
@@ -300,3 +303,4 @@ class CCNN:
         self.train_accuracy = 1 - train_error
         self.test_accuracy = 1 - test_error
         self.log_likelihood = likelihood
+        self.probs = probs
