@@ -78,7 +78,7 @@ class CCNN:
             for fw, aw in zip(from_state.filter_weights, from_state.A_weights):
                 # TODO: Save filters with their generation param.s in CCNNState object. Use these params instead of the
                 #   default ones below.
-                self.generate_layer(filter_weight=fw, A_weight=aw)
+                self.generate_layer(filter_weight=fw, A_weight=aw, n_iter=n_iter)
 
     # TODO: Save reduced input & learned features
     def generate_layer(self,
