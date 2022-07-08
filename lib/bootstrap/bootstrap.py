@@ -149,7 +149,8 @@ def cnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, crit
     lg.info(f"{repeats} inputs seen more than once")
 
 
-def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size=16, X=200, conf_level=95, B=100, epochs=5, num_class=10, device=None):
+def ccnn_bootstrap(model, train_data: Dataset, valid_dataloader: DataLoader, batch_size=16, X=200, conf_level=95, B=100,
+                   epochs=5, num_class=10, device=None):
     alpha = (100 - conf_level) / 2
     alpha_ = 100 - alpha
     
@@ -164,7 +165,7 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
     for i in range(len(train_data)):
         repetitions[str(i)] = 0
         
-        ccnn_state = None
+        ccnn_state = model.state
         
         # sample B times
         for b in range(B):
@@ -183,6 +184,7 @@ def ccnn_bootstrap(train_data: Dataset, valid_dataloader: DataLoader, batch_size
                 state=ccnn_state,
                 multilayer_method="ZHANG",
                 n_iter=epochs,
+                # device=device
                 device=torch.device("cpu")  # Temporarily use CPU only
             )
             
