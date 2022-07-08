@@ -93,7 +93,7 @@ if __name__ == "__main__":
         device=torch.device("cpu")  # Temporarily use CPU only. TODO: Change after implementing torch tensors
     )
     
-    bs.ccnn_bootstrap()
+    bs.ccnn_bootstrap(ccnn_model, train_dset, test_dl, BATCH_SIZE, device=device)
 
     lg.info("Begin bootstrap with LeNet (described in paper)...")
     

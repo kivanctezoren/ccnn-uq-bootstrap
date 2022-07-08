@@ -4,7 +4,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader, Subset
 
 from numpy import random
-from ..ccnn import ccnn
+from ccnn import ccnn
 
 
 random_generator = random.default_rng(501)
