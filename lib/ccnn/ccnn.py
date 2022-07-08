@@ -288,7 +288,8 @@ class CCNN:
         
         self.layer_count += 1
         # TODO: Process as tensor rather than ndarray
-        self.state.filter_weights.append(torch.from_numpy(filter_weight))
+        #self.state.filter_weights.append(torch.from_numpy(filter_weight))
+        self.state.filter_weights.append(None)  # FIXME: Temp fix...
         # TODO: Process as tensor rather than ndarray
         self.state.A_weights.append(None if A is None else torch.from_numpy(A))
         self.last_layer_output = torch.from_numpy(output)
