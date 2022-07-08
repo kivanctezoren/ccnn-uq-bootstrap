@@ -261,6 +261,7 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
     computation_time = 0
     error_train = 1
     error_test = 1
+    dim = 0
 
     for t in range(n_iter):
         mini_batch_size = 50
@@ -304,16 +305,23 @@ def low_rank_matrix_regression(x_train, y_train, x_test, y_test, prev_A, d1, d2,
             lg.info("iteration " + str(t+1) + ": loss=" + str(loss) + ", train error=" + str(error_train)
                     + ", test error=" + str(error_test) + ", dim=" + str(dim))
             # lg.info(str(computation_time) + "\t" + str(error_test))
+    
+    if n_iter < 250:
+        dim = np.sum(s[0:25]) / np.sum(s)
+        A_avg = A_sum / n_iter
 
     A_avg, U, s, V = project_to_trace_norm(np.reshape(A_avg, (9*cropped_d1, d2)), reg, cropped_d1, d2)
     
-    _, error_train, error_test, likelihood_est, probs = evaluate_classifier(
+    loss, error_train, error_test, likelihood_est, probs = evaluate_classifier(
         central_crop(x_train, d1, d2, ratio),
         central_crop(x_test, d1, d2, ratio),
         y_train,
         y_test,
         A_avg
     )
+
+    lg.info("iteration " + str(n_iter) + ": loss=" + str(loss) + ", train error=" + str(error_train)
+            + ", test error=" + str(error_test) + ", dim=" + str(dim))
     
     dim = min(np.sum((s > 0).astype(int)), 25)
     return V[0:dim], error_train, error_test, likelihood_est, probs, A_avg
